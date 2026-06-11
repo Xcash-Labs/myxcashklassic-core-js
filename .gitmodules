@@ -1,0 +1,3 @@
+[submodule "external/xcash-klassic"]
+	path = external/xcash-klassic
+	url = https://github.com/Xcash-Labs/xcash-labs-core.git
