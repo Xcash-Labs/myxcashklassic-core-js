@@ -23,7 +23,6 @@ set(MONERO_SRC "${XCK_ROOT}/src")
 #
 include_directories("${MONERO_SRC}")
 include_directories("${MONERO_SRC}/common")
-include_directories("${MONERO_SRC}/vtlogger")
 include_directories("${MONERO_SRC}/crypto")
 include_directories("${MONERO_SRC}/cryptonote_basic")
 include_directories("${MONERO_SRC}/multisig")
@@ -118,7 +117,6 @@ set(
     ${MONERO_SRC}/ringct/bulletproofs_plus.cc
     ${MONERO_SRC}/ringct/multiexp.cc
     ${MONERO_SRC}/mnemonics/electrum-words.cpp
-    ${MONERO_SRC}/vtlogger/logger.cpp
 )
 
 set (EMCC_LINKER_FLAGS__WASM
