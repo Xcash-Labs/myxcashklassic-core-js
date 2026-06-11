@@ -10,7 +10,7 @@ include_directories("node_modules")
 #
 # MyMonero JS/C++ bridge wrapper code
 #
-set(MYMONERO_CORE_CPP "node_modules/@mymonero/mymonero-core-cpp")
+set(MYMONERO_CORE_CPP "${CMAKE_CURRENT_SOURCE_DIR}/xcashklassic-core-cpp")
 set(MYMONERO_CORE_CPP_SRC "${MYMONERO_CORE_CPP}/src")
 include_directories("${MYMONERO_CORE_CPP_SRC}")
 #

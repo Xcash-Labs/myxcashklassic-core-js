@@ -1,0 +1,11 @@
+{
+  "name": "@mymonero/mymonero-core-cpp",
+  "version": "0.0.0",
+  "description": "-",
+  "repository": {
+    "type": "git",
+    "url": "-"
+  },
+  "readme": "-",
+  "_napaResolved": "git+https://github.com/mymonero/mymonero-core-cpp"
+}
