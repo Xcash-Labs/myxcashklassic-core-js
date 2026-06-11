@@ -21,6 +21,7 @@ set(MONERO_SRC "${XCK_ROOT}/src")
 #
 # XCash Klassic / Monero-style core includes
 #
+include_directories("${MYMONERO_CORE_CPP}/shims")
 include_directories("${MONERO_SRC}")
 include_directories("${MONERO_SRC}/common")
 include_directories("${MONERO_SRC}/crypto")
