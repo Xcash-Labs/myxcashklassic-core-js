@@ -1,22 +1,27 @@
 cmake_minimum_required(VERSION 3.4.1)
-
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-enum-constexpr-conversion")
 add_compile_definitions(MYMONERO_CORE_CUSTOM)
-
 project(MyMoneroCoreCpp)
 #
+# Local wrapper source + npm dependencies
 #
 include_directories("src")
 include_directories("node_modules")
 #
-set(MYMONERO_CORE_CPP "node_modules/@mymonero/mymonero-core-cpp")
-set(MONERO_SRC "node_modules/@mymonero/mymonero-core-custom")
-set(MYMONERO_CORE_CPP_SRC "${MYMONERO_CORE_CPP}/src")
-include_directories("${MYMONERO_CORE_CPP}/src")
+# MyMonero JS/C++ bridge wrapper code
 #
-#set(MONERO_SRC "${MYMONERO_CUSTOM_CPP}/contrib/monero-core-custom")
-include_directories(${MONERO_SRC})
-include_directories("${MONERO_SRC}/epee/include")
+set(MYMONERO_CORE_CPP "node_modules/@mymonero/mymonero-core-cpp")
+set(MYMONERO_CORE_CPP_SRC "${MYMONERO_CORE_CPP}/src")
+include_directories("${MYMONERO_CORE_CPP_SRC}")
+#
+# XCash Klassic core source submodule
+#
+set(XCK_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/external/xcash-klassic")
+set(MONERO_SRC "${XCK_ROOT}/src")
+#
+# XCash Klassic / Monero-style core includes
+#
+include_directories("${MONERO_SRC}")
 include_directories("${MONERO_SRC}/common")
 include_directories("${MONERO_SRC}/vtlogger")
 include_directories("${MONERO_SRC}/crypto")
@@ -27,8 +32,12 @@ include_directories("${MONERO_SRC}/cryptonote_protocol")
 include_directories("${MONERO_SRC}/wallet")
 include_directories("${MONERO_SRC}/rpc")
 include_directories("${MONERO_SRC}/mnemonics")
-include_directories("${MONERO_SRC}/contrib/libsodium/include") # support sodium/… paths
-include_directories("${MONERO_SRC}/contrib/libsodium/include/sodium")
+include_directories("${MONERO_SRC}/device")
+include_directories("${MONERO_SRC}/ringct")
+#
+# epee is external in the XCash Klassic source tree
+#
+include_directories("${XCK_ROOT}/external/epee/include")
 #
 # keeping test files in a separate source directory 
 # file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/test_*.cpp)
@@ -94,11 +103,11 @@ set(
     ${MONERO_SRC}/common/threadpool.cpp
     ${MONERO_SRC}/common/aligned.c
     ${MONERO_SRC}/common/util.cpp
-    ${MONERO_SRC}/epee/src/hex.cpp
-    ${MONERO_SRC}/epee/src/string_tools.cpp
-    ${MONERO_SRC}/epee/src/memwipe.c
-    ${MONERO_SRC}/epee/src/mlocker.cpp
-    ${MONERO_SRC}/epee/src/wipeable_string.cpp
+    ${XCK_ROOT}/external/epee/src/hex.cpp
+    ${XCK_ROOT}/external/epee/src/string_tools.cpp
+    ${XCK_ROOT}/external/epee/src/memwipe.c
+    ${XCK_ROOT}/external/epee/src/mlocker.cpp
+    ${XCK_ROOT}/external/epee/src/wipeable_string.cpp
     ${MONERO_SRC}/device/device.cpp
     ${MONERO_SRC}/device/device_default.cpp
     ${MONERO_SRC}/ringct/rctOps.cpp
@@ -110,7 +119,6 @@ set(
     ${MONERO_SRC}/ringct/multiexp.cc
     ${MONERO_SRC}/mnemonics/electrum-words.cpp
     ${MONERO_SRC}/vtlogger/logger.cpp
-    ${MONERO_SRC}/contrib/libsodium/src/crypto_verify/verify.c
 )
 
 set (EMCC_LINKER_FLAGS__WASM
