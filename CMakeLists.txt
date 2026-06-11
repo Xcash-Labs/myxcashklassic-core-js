@@ -103,11 +103,11 @@ set(
     ${MONERO_SRC}/common/threadpool.cpp
     ${MONERO_SRC}/common/aligned.c
     ${MONERO_SRC}/common/util.cpp
-    ${XCK_ROOT}/external/epee/src/hex.cpp
-    ${XCK_ROOT}/external/epee/src/string_tools.cpp
-    ${XCK_ROOT}/external/epee/src/memwipe.c
-    ${XCK_ROOT}/external/epee/src/mlocker.cpp
-    ${XCK_ROOT}/external/epee/src/wipeable_string.cpp
+    ${XCK_ROOT}/external/xcash-klassic/contrib/epee/src/external/hex.cpp
+    ${XCK_ROOT}/external/xcash-klassic/contrib/epee/src/external/string_tools.cpp
+    ${XCK_ROOT}/external/xcash-klassic/contrib/epee/src/external/memwipe.c
+    ${XCK_ROOT}/external/xcash-klassic/contrib/epee/src/external/mlocker.cpp
+    ${XCK_ROOT}/external/xcash-klassic/contrib/epee/src/external/wipeable_string.cpp
     ${MONERO_SRC}/device/device.cpp
     ${MONERO_SRC}/device/device_default.cpp
     ${MONERO_SRC}/ringct/rctOps.cpp
