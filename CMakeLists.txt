@@ -35,6 +35,7 @@ include_directories("${MONERO_SRC}/mnemonics")
 include_directories("${MONERO_SRC}/device")
 include_directories("${MONERO_SRC}/ringct")
 include_directories("${XCK_ROOT}/contrib/epee/include")
+include_directories("${XCK_ROOT}/external/easylogging++")
 #
 # epee is external in the XCash Klassic source tree
 #
