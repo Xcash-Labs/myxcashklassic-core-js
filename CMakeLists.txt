@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4.1)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-enum-constexpr-conversion")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wno-enum-constexpr-conversion")
 add_compile_definitions(MYMONERO_CORE_CUSTOM)
 project(MyMoneroCoreCpp)
 #
@@ -122,7 +122,7 @@ set(
 set (EMCC_LINKER_FLAGS__WASM
 "-Wall \
 -gsource-map \
--std=c++11 \
+-std=c++17 \
 -flto \
 --bind \
 -s STRICT=1 \
