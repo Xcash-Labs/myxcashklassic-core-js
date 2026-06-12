@@ -736,7 +736,7 @@ void monero_transfer_utils::create_transaction(
 	bool r = cryptonote::construct_tx_and_get_tx_key(
 		sender_account_keys, subaddresses,
 		sources, splitted_dsts, change_dst.addr, extra,
-		tx, unlock_time, tx_key, additional_tx_keys,
+		tx, "private", unlock_time, tx_key, additional_tx_keys,
 		true, rct_config, true);
 
 	LOG_PRINT_L2("constructed tx, r="<<r);
