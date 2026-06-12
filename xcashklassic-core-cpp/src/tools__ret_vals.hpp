@@ -41,7 +41,7 @@ namespace tools
 	struct RetVals_base
 	{
 		bool did_error = false;
-		boost::optional<string> err_string = none;
+		boost::optional<string> err_string = boost::none;
 		//
 		// derive *_RetVals structs from this type and add your own members
 	};

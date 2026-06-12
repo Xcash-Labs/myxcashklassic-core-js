@@ -98,7 +98,7 @@ bool monero_wallet_utils::convenience__new_wallet_with_language_code(
 	network_type nettype
 ) {
 	auto mnemonic_language = mnemonic_language_from_code(locale_language_code);
-	if (mnemonic_language == none) {
+	if (mnemonic_language == boost::none) {
 		retVals.did_error = true;
 		retVals.err_string = "Unrecognized locale language code";
 		return false;
@@ -433,7 +433,7 @@ bool monero_wallet_utils::validate_wallet_components_with( // returns !did_error
 	retVals.isInViewOnlyMode = true; // setting the ground state
 	//
 	crypto::secret_key sec_spendKey; // may be initialized
-	if (sec_spendKey_string != none) {
+	if (sec_spendKey_string != boost::none) {
 		// First check if spend key content actually exists before passing to valid_sec_key_from - so that a spend key decode error can be treated as a failure instead of detecting empty spend keys too
 		if ((*sec_spendKey_string).empty() == false) {
 			r = string_tools::hex_to_pod(*sec_spendKey_string, sec_spendKey);
@@ -461,7 +461,7 @@ bool monero_wallet_utils::validate_wallet_components_with( // returns !did_error
 			retVals.isInViewOnlyMode = false;
 		}
 	}
-	if (sec_seed_string != none) {
+	if (sec_seed_string != boost::none) {
 		if ((*sec_seed_string).empty() == false) {
 			unsigned long sec_seed_string_length = (*sec_seed_string).length();
 			crypto::secret_key sec_seed;

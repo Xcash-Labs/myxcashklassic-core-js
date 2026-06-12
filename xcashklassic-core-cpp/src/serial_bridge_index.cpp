@@ -70,7 +70,7 @@ string serial_bridge::decode_address(const string address, const string nettype)
 	root.put("isSubaddress", retVals.isSubaddress);
 	root.put("publicViewKey", *(retVals.pub_viewKey_string));
 	root.put("publicSpendKey", *(retVals.pub_spendKey_string));
-	if (retVals.paymentID_string != none) {
+	if (retVals.paymentID_string != boost::none) {
 		root.put("paymentId", *(retVals.paymentID_string));
 	}
 	//
@@ -151,7 +151,7 @@ string serial_bridge::mnemonic_from_seed(const string seed, const string wordset
 		wordsetName
 	);
 	boost::property_tree::ptree root;
-	if (retVals.err_string != none) {
+	if (retVals.err_string != boost::none) {
 		return error_ret_json_from_message(*(retVals.err_string));
 	}
 	root.put("retVal", std::string((*(retVals.mnemonic_string)).data(), (*(retVals.mnemonic_string)).size()));
@@ -280,8 +280,8 @@ string serial_bridge::send_step1__prepare_params_for_get_decoys(const string &ar
 		out.amount = stoull(output_desc.second.get<string>("amount"));
 		out.public_key = output_desc.second.get<string>("public_key");
 		out.rct = output_desc.second.get_optional<string>("rct");
-		if (out.rct != none && (*out.rct).empty() == true) {
-			out.rct = none; // just in case it's an empty string, send to 'none' (even though receiving code now handles empty strs)
+		if (out.rct != boost::none && (*out.rct).empty() == true) {
+			out.rct = boost::none; // just in case it's an empty string, send to 'boost::none' (even though receiving code now handles empty strs)
 		}
 		out.global_index = stoull(output_desc.second.get<string>("global_index"));
 		out.index = stoull(output_desc.second.get<string>("index"));
@@ -290,14 +290,14 @@ string serial_bridge::send_step1__prepare_params_for_get_decoys(const string &ar
 		unspent_outs.push_back(std::move(out));
 	}
 	boost::optional<string> optl__prior_attempt_size_calcd_fee_string = json_root.get_optional<string>("prior_attempt_size_calcd_fee");
-	boost::optional<uint64_t> optl__prior_attempt_size_calcd_fee = none;
-	if (optl__prior_attempt_size_calcd_fee_string != none) {
+	boost::optional<uint64_t> optl__prior_attempt_size_calcd_fee = boost::none;
+	if (optl__prior_attempt_size_calcd_fee_string != boost::none) {
 		optl__prior_attempt_size_calcd_fee = stoull(*optl__prior_attempt_size_calcd_fee_string);
 	}
 	boost::optional<SpendableOutputToRandomAmountOutputs> optl__prior_attempt_unspent_outs_to_mix_outs;
 	SpendableOutputToRandomAmountOutputs prior_attempt_unspent_outs_to_mix_outs;
 	boost::optional<boost::property_tree::ptree &> optl__prior_attempt_unspent_outs_to_mix_outs_json = json_root.get_child_optional("prior_attempt_unspent_outs_to_mix_outs");
-	if (optl__prior_attempt_unspent_outs_to_mix_outs_json != none)
+	if (optl__prior_attempt_unspent_outs_to_mix_outs_json != boost::none)
 	{
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &outs_to_mix_outs_desc, *optl__prior_attempt_unspent_outs_to_mix_outs_json)
 		{
@@ -318,7 +318,7 @@ string serial_bridge::send_step1__prepare_params_for_get_decoys(const string &ar
 	}
 	uint8_t fork_version = 0; // if missing
 	boost::optional<string> optl__fork_version_string = json_root.get_optional<string>("fork_version");
-	if (optl__fork_version_string != none) {
+	if (optl__fork_version_string != boost::none) {
 		fork_version = stoul(*optl__fork_version_string);
 	}
 	Send_Step1_RetVals retVals;
@@ -358,7 +358,7 @@ string serial_bridge::send_step1__prepare_params_for_get_decoys(const string &ar
  				auto& out_ptree = out_ptree_pair.second;
 				out_ptree.put("amount", RetVals_Transforms::str_from(out.amount));
 				out_ptree.put("public_key", out.public_key);
-				if (out.rct != none && (*out.rct).empty() == false) {
+				if (out.rct != boost::none && (*out.rct).empty() == false) {
 					out_ptree.put("rct", *out.rct); 
 				}
 				out_ptree.put("global_index", RetVals_Transforms::str_from(out.global_index));
@@ -388,8 +388,8 @@ string serial_bridge::pre_step2_tie_unspent_outs_to_mix_outs_for_all_future_tx_a
 		out.amount = stoull(output_desc.second.get<string>("amount"));
 		out.public_key = output_desc.second.get<string>("public_key");
 		out.rct = output_desc.second.get_optional<string>("rct");
-		if (out.rct != none && (*out.rct).empty() == true) {
-			out.rct = none; // just in case it's an empty string, send to 'none' (even though receiving code now handles empty strs)
+		if (out.rct != boost::none && (*out.rct).empty() == true) {
+			out.rct = boost::none; // just in case it's an empty string, send to 'boost::none' (even though receiving code now handles empty strs)
 		}
 		out.global_index = stoull(output_desc.second.get<string>("global_index"));
 		out.index = stoull(output_desc.second.get<string>("index"));
@@ -419,7 +419,7 @@ string serial_bridge::pre_step2_tie_unspent_outs_to_mix_outs_for_all_future_tx_a
 	boost::optional<SpendableOutputToRandomAmountOutputs> optl__prior_attempt_unspent_outs_to_mix_outs;
 	SpendableOutputToRandomAmountOutputs prior_attempt_unspent_outs_to_mix_outs;
 	boost::optional<boost::property_tree::ptree &> optl__prior_attempt_unspent_outs_to_mix_outs_json = json_root.get_child_optional("prior_attempt_unspent_outs_to_mix_outs");
-	if (optl__prior_attempt_unspent_outs_to_mix_outs_json != none)
+	if (optl__prior_attempt_unspent_outs_to_mix_outs_json != boost::none)
 	{
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &outs_to_mix_outs_desc, *optl__prior_attempt_unspent_outs_to_mix_outs_json)
 		{
@@ -468,7 +468,7 @@ string serial_bridge::pre_step2_tie_unspent_outs_to_mix_outs_for_all_future_tx_a
 					auto& mix_out_ptree = mix_out_ptree_pair.second;
 					mix_out_ptree.put("global_index", RetVals_Transforms::str_from(out.global_index));
 					mix_out_ptree.put("public_key", out.public_key);
-					if (out.rct != none && (*out.rct).empty() == false) {
+					if (out.rct != boost::none && (*out.rct).empty() == false) {
 						mix_out_ptree.put("rct", *out.rct);
 					}
 					outputs_ptree.push_back(mix_out_ptree_pair);
@@ -491,7 +491,7 @@ string serial_bridge::pre_step2_tie_unspent_outs_to_mix_outs_for_all_future_tx_a
 					auto& mix_out_ptree = mix_out_ptree_pair.second;
 					mix_out_ptree.put("global_index", RetVals_Transforms::str_from(mix_out.global_index));
 					mix_out_ptree.put("public_key", mix_out.public_key);
-					if (mix_out.rct != none && (*mix_out.rct).empty() == false) {
+					if (mix_out.rct != boost::none && (*mix_out.rct).empty() == false) {
 						mix_out_ptree.put("rct", *mix_out.rct);
 					}
 					outs_ptree.push_back(mix_out_ptree_pair);
@@ -520,8 +520,8 @@ string serial_bridge::send_step2__try_create_transaction(const string &args_stri
 		out.amount = stoull(output_desc.second.get<string>("amount"));
 		out.public_key = output_desc.second.get<string>("public_key");
 		out.rct = output_desc.second.get_optional<string>("rct");
-		if (out.rct != none && (*out.rct).empty() == true) {
-			out.rct = none; // send to 'none' if empty str for safety
+		if (out.rct != boost::none && (*out.rct).empty() == true) {
+			out.rct = boost::none; // send to 'boost::none' if empty str for safety
 		}
 		out.global_index = stoull(output_desc.second.get<string>("global_index"));
 		out.index = stoull(output_desc.second.get<string>("index"));
@@ -548,7 +548,7 @@ string serial_bridge::send_step2__try_create_transaction(const string &args_stri
 	}
 	uint8_t fork_version = 0; // if missing
 	boost::optional<string> optl__fork_version_string = json_root.get_optional<string>("fork_version");
-	if (optl__fork_version_string != none) {
+	if (optl__fork_version_string != boost::none) {
 		fork_version = stoul(*optl__fork_version_string);
 	}
 	Send_Step2_RetVals retVals;

@@ -55,7 +55,7 @@ CreateTransactionErrorCode _add_pid_to_tx_extra(
 	vector<uint8_t> &extra
 ) { // Detect hash8 or hash32 char hex string as pid and configure 'extra' accordingly
 	bool r = false;
-	if (payment_id_string != none && payment_id_string->size() > 0) {
+	if (payment_id_string != boost::none && payment_id_string->size() > 0) {
 		crypto::hash payment_id;
 		r = monero_paymentID_utils::parse_long_payment_id(*payment_id_string, payment_id);
 		if (r) {
@@ -225,7 +225,7 @@ void monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
 	const uint64_t fee_multiplier = get_fee_multiplier(simple_priority, default_priority(), get_fee_algorithm(use_fork_rules_fn), use_fork_rules_fn);
 	//
 	uint64_t attempt_at_min_fee;
-	if (prior_attempt_size_calcd_fee == none) {
+	if (prior_attempt_size_calcd_fee == boost::none) {
 		attempt_at_min_fee = estimate_fee(true/*use_per_byte_fee*/, true/*use_rct*/, 1/*est num inputs*/, fake_outs_count, 2, extra.size(), bulletproof, clsag, base_fee, fee_multiplier, fee_quantization_mask);
 		// use a minimum viable estimate_fee() with 1 input. It would be better to under-shoot this estimate, and then need to use a higher fee  from calculate_fee() because the estimate is too low,
 		// versus the worse alternative of over-estimating here and getting stuck using too high of a fee that leads to fingerprinting
@@ -251,7 +251,7 @@ void monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
 	vector<SpendableOutput>  remaining_unusedOuts = unspent_outs; // take copy so not to modify original
 
 	// start by using all the passed in outs that were selected in a prior tx construction attempt
-	if (prior_attempt_unspent_outs_to_mix_outs != none) {
+	if (prior_attempt_unspent_outs_to_mix_outs != boost::none) {
 		for (size_t i = 0; i < remaining_unusedOuts.size(); ++i) {
 			SpendableOutput &out = remaining_unusedOuts[i];
 
@@ -266,12 +266,12 @@ void monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
 	// TODO: factor this out to get spendable balance for display in the MM wallet:
 	while (using_outs_amount < potential_total && remaining_unusedOuts.size() > 0) {
 		auto out = pop_random_value(remaining_unusedOuts);
-		if (!use_rct && (out.rct != none && (*out.rct).empty() == false)) {
+		if (!use_rct && (out.rct != boost::none && (*out.rct).empty() == false)) {
 			// out.rct is set by the server
 			continue; // skip rct outputs if not creating rct tx
 		}
 		if (out.amount < monero_fork_rules::dust_threshold()) { // amount is dusty..
-			if (out.rct == none || (*out.rct).empty()) {
+			if (out.rct == boost::none || (*out.rct).empty()) {
 //				cout << "Found a dusty but unmixable (non-rct) output... skipping it!" << endl;
 				continue;
 			} else {
@@ -292,7 +292,7 @@ void monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
 		bulletproof, clsag, base_fee, fee_multiplier, fee_quantization_mask
 	);
 	// if newNeededFee < neededFee, use neededFee instead (should only happen on the 2nd or later times through (due to estimated fee being too low))
-	if (prior_attempt_size_calcd_fee != none && needed_fee < attempt_at_min_fee) {
+	if (prior_attempt_size_calcd_fee != boost::none && needed_fee < attempt_at_min_fee) {
 		needed_fee = attempt_at_min_fee;
 	}
 	//
@@ -386,8 +386,8 @@ void monero_transfer_utils::pre_step2_tie_unspent_outs_to_mix_outs_for_all_futur
 		// then tie out to a set of mix outs retrieved from the server
 		if (prior_attempt_unspent_outs_to_mix_outs_new.find(out.public_key) == prior_attempt_unspent_outs_to_mix_outs_new.end()) {
 			for (size_t j = 0; j < mix_outs_from_server.size(); ++j) {
-				if ((out.rct != none && mix_outs_from_server[j].amount != 0) ||
-					(out.rct == none && mix_outs_from_server[j].amount != out.amount)) {
+				if ((out.rct != boost::none && mix_outs_from_server[j].amount != 0) ||
+					(out.rct == boost::none && mix_outs_from_server[j].amount != out.amount)) {
 					continue;
 				}
 
@@ -562,7 +562,7 @@ void monero_transfer_utils::create_transaction(
 		}
 		auto src = tx_source_entry{};
 		src.amount = outputs[out_index].amount;
-		src.rct = outputs[out_index].rct != none && (*(outputs[out_index].rct)).empty() == false;
+		src.rct = outputs[out_index].rct != boost::none && (*(outputs[out_index].rct)).empty() == false;
 		//
 		typedef cryptonote::tx_source_entry::output_entry tx_output_entry;
 		if (mix_outs.size() != 0) {
@@ -621,7 +621,7 @@ void monero_transfer_utils::create_transaction(
 		}
 		real_oe.second.dest = rct::pk2rct(public_key);
 		//
-		if (outputs[out_index].rct != none
+		if (outputs[out_index].rct != boost::none
 				&& outputs[out_index].rct->empty() == false
 				&& *outputs[out_index].rct != "coinbase") {
 			rct::key commit;
@@ -810,7 +810,7 @@ void monero_transfer_utils::convenience__create_transaction(
 		retVals.errCode = tx_extra__code;
 		return;
 	}
-	bool payment_id_seen = payment_id_string != none; // logically this is true since payment_id_string has passed validation (or we'd have errored)
+	bool payment_id_seen = payment_id_string != boost::none; // logically this is true since payment_id_string has passed validation (or we'd have errored)
 	for (const auto& to_addr_info : to_addr_infos) {
 		if (to_addr_info.is_subaddress && payment_id_seen) {
  			retVals.errCode = cantUsePIDWithSubAddress; // Never use a subaddress with a payment ID

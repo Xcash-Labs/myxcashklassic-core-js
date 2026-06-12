@@ -87,10 +87,10 @@ namespace monero_wallet_utils
 	// Accounts
 	struct MnemonicDecodedSeed_RetVals: RetVals_base
 	{
-		boost::optional<secret_key> optl__sec_seed = none;
-		boost::optional<string> optl__sec_seed_string = none;
-		boost::optional<string> optl__mnemonic_string = none;
-		boost::optional<string> mnemonic_language = none;
+		boost::optional<secret_key> optl__sec_seed = boost::none;
+		boost::optional<string> optl__sec_seed_string = boost::none;
+		boost::optional<string> optl__mnemonic_string = boost::none;
+		boost::optional<string> mnemonic_language = boost::none;
 		bool from_legacy16B_lw_seed = false;
 	};
 	bool decoded_seed(
@@ -101,7 +101,7 @@ namespace monero_wallet_utils
 	//
 	struct SeedDecodedMnemonic_RetVals: RetVals_base
 	{
-		boost::optional<epee::wipeable_string> mnemonic_string = none;
+		boost::optional<epee::wipeable_string> mnemonic_string = boost::none;
 	};
 	SeedDecodedMnemonic_RetVals mnemonic_string_from_seed_hex_string(
 		const string &seed_string,
@@ -160,7 +160,7 @@ namespace monero_wallet_utils
 		} else if (is_prefixed_by(language_code, "jbo")) {
 			return string("Lojban");
 		} else {
-			return none; // error .. possibly throw?
+			return boost::none; // error .. possibly throw?
 		}
 	};
 	bool convenience__new_wallet_with_language_code(

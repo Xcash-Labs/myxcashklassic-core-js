@@ -82,7 +82,7 @@ string serial_bridge_utils::string_from_nettype(network_type nettype)
 boost::optional<double> serial_bridge_utils::none_or_double_from(const boost::property_tree::ptree &json, const string &key)
 {
 	boost::optional<string> str = json.get_optional<string>(key);
-	if (str != none) {
+	if (str != boost::none) {
 		return stod(*str); // this may throw an exception - allowing it to bubble up here
 	}
 	boost::optional<double> dbl_orNone = json.get_optional<double>(key);
@@ -92,14 +92,14 @@ boost::optional<double> serial_bridge_utils::none_or_double_from(const boost::pr
 boost::optional<bool> serial_bridge_utils::none_or_bool_from(const boost::property_tree::ptree &json, const string &key)
 {
 	boost::optional<string> str = json.get_optional<string>(key);
-	if (str != none) {
+	if (str != boost::none) {
 		if (*str == "true" || *str == "1") {
 			return true;
 		} else if (*str == "false" || *str == "0") {
 			return false;
 		} else {
 			BOOST_THROW_EXCEPTION(logic_error("Unable to parse bool string"));
-			return none;
+			return boost::none;
 		}
 	}
 	boost::optional<bool> bool_orNone = json.get_optional<bool>(key);
@@ -140,7 +140,7 @@ string serial_bridge_utils::error_ret_json_from_code(int code, boost::optional<s
 {
 	boost::property_tree::ptree root;
 	root.put("err_code", code);
-	if (err_msg != none) {
+	if (err_msg != boost::none) {
 		root.put("err_msg", *err_msg);
 	}
 	//

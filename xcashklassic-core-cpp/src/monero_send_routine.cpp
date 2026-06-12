@@ -60,14 +60,14 @@ boost::optional<uint64_t> _possible_uint64_from_json(
 ) { // throws
 	auto optl_str = res.get_optional<string>(fieldname);
 //	cout << fieldname << ": " << optl_str << endl;
-	if (optl_str != none) {
+	if (optl_str != boost::none) {
 		return stoull(*optl_str);
 	}
 	auto optl_uint32 = res.get_optional<uint32_t>(fieldname); // not uint64 b/c JSON can't store such values
-	if (optl_uint32 != none) {
+	if (optl_uint32 != boost::none) {
 		return (uint64_t)*optl_uint32; // cast
 	}
-	return none;
+	return boost::none;
 }
 
 //
@@ -107,7 +107,7 @@ LightwalletAPI_Req_GetRandomOuts monero_send_routine::new__req_params__get_rando
 	vector<string> decoy_req__amounts;
 	BOOST_FOREACH(SpendableOutput &using_out, decoy_requests)
 	{
-		if (using_out.rct != none && (*(using_out.rct)).size() > 0) {
+		if (using_out.rct != boost::none && (*(using_out.rct)).size() > 0) {
 			decoy_req__amounts.push_back("0");
 		} else {
 			ostringstream amount_ss;
@@ -131,7 +131,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 	uint64_t fee_mask = 10000; // just a fallback value - no real reason to set this here normally
 	try {
 		boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "per_byte_fee");
-		if (possible__uint64 != none) {
+		if (possible__uint64 != boost::none) {
 			final__per_byte_fee = *possible__uint64;
 		}
 	} catch (const std::exception &e) {
@@ -139,12 +139,12 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 		string err_msg = "Unspent outs: Unrecognized per-byte fee format";
 		return {
 			err_msg,
-			none, none, none
+			boost::none, boost::none, boost::none
 		};
 	}
 	try {
 		boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "fee_mask");
-		if (possible__uint64 != none) {
+		if (possible__uint64 != boost::none) {
 			fee_mask = *possible__uint64;
 		}
 	} catch (const std::exception &e) {
@@ -152,13 +152,13 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 		string err_msg = "Unspent outs: Unrecognized fee_mask format";
 		return {
 			err_msg,
-			none, none, none
+			boost::none, boost::none, boost::none
 		};
 	}
 	if (final__per_byte_fee == 0) {
 		try {
 			boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "per_kb_fee");
-			if (possible__uint64 != none) {
+			if (possible__uint64 != boost::none) {
 				final__per_byte_fee = (*possible__uint64) / 1024; // scale from kib to b
 				fee_mask = 10000; // just to be explicit
 			}
@@ -167,7 +167,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 			string err_msg = "Unspent outs: Unrecognized per-kb fee format";
 			return {
 				err_msg,
-				none, none, none
+				boost::none, boost::none, boost::none
 			};
 		}
 	}
@@ -175,7 +175,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 		string err_msg = "Unable to get a per-byte fee from server response.";
 		return {
 			err_msg,
-			none, none, none
+			boost::none, boost::none, boost::none
 		};
 	}
 	vector<SpendableOutput> unspent_outs;
@@ -184,7 +184,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 		assert(output_desc.first.empty()); // array elements have no names
 		//
 		auto optl__tx_pub_key = output_desc.second.get_optional<string>("tx_pub_key");
-		if (optl__tx_pub_key == none) { // TODO: do we ever actually expect these not to exist?
+		if (optl__tx_pub_key == boost::none) { // TODO: do we ever actually expect these not to exist?
 			cout << "Warn: This unspent out was missing a tx_pub_key. Skipping." << endl;
 			continue; // skip
 		}
@@ -195,20 +195,20 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 				string err_msg = "Invalid tx pub key";
 				return {
 					err_msg,
-					none, none, none
+					boost::none, boost::none, boost::none
 				};
 			}
 		}
 		uint64_t output__index;
 		try {
 			boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(output_desc.second, "index");
-			if (possible__uint64 != none) {
+			if (possible__uint64 != boost::none) {
 				output__index = *possible__uint64; // expecting this to exist
 			} else { // bail
 				string err_msg = "Expected unspent output to have an \"index\"";
 				return {
 					err_msg,
-					none, none, none
+					boost::none, boost::none, boost::none
 				};
 			}
 		} catch (const std::exception &e) {
@@ -216,7 +216,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 			string err_msg = "Unspent outs: Unrecognized output index format";
 			return {
 				err_msg,
-				none, none, none
+				boost::none, boost::none, boost::none
 			};
 		}
 		bool isOutputSpent = false; // let's see…
@@ -234,7 +234,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 					string err_msg = "Unable to generate key image";
 					return {
 						err_msg,
-						none, none, none
+						boost::none, boost::none, boost::none
 					};
 				}
 				auto calculated_key_image_string = epee::string_tools::pod_to_hex(retVals.calculated_key_image);
@@ -260,7 +260,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 	}
 	auto fork_version = res.get_optional<uint8_t>("fork_version");
 	return LightwalletAPI_Res_GetUnspentOuts{
-		none,
+		boost::none,
 		final__per_byte_fee, fee_mask, unspent_outs,
 		fork_version ? *fork_version : static_cast<uint8_t>(0)
 	};
@@ -275,13 +275,13 @@ LightwalletAPI_Res_GetRandomOuts monero_send_routine::new__parsed_res__get_rando
 		auto amountAndOuts = RandomAmountOutputs{};
 		try {
 			boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(mix_out_desc.second, "amount");
-			if (possible__uint64 != none) {
+			if (possible__uint64 != boost::none) {
 				amountAndOuts.amount = *possible__uint64;
 			}
 		} catch (const std::exception &e) {
 			cout << "Random outs response 'amount' parse error: " << e.what() << endl;
 			string err_msg = "Random outs: Unrecognized 'amount' format";
-			return {err_msg, none};
+			return {err_msg, boost::none};
 		}
 		BOOST_FOREACH(const boost::property_tree::ptree::value_type &mix_out_output_desc, mix_out_desc.second.get_child("outputs"))
 		{
@@ -289,13 +289,13 @@ LightwalletAPI_Res_GetRandomOuts monero_send_routine::new__parsed_res__get_rando
 			auto amountOutput = RandomAmountOutput{};
 			try {
 				boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(mix_out_output_desc.second, "global_index");
-				if (possible__uint64 != none) {
+				if (possible__uint64 != boost::none) {
 					amountOutput.global_index = *possible__uint64;
 				}
 			} catch (const std::exception &e) {
 				cout << "Random outs response 'global_index' parse error: " << e.what() << endl;
 				string err_msg = "Random outs: Unrecognized 'global_index' format";
-				return {err_msg, none};
+				return {err_msg, boost::none};
 			}
 			amountOutput.public_key = mix_out_output_desc.second.get<string>("public_key");
 			amountOutput.rct = mix_out_output_desc.second.get_optional<string>("rct");
@@ -305,7 +305,7 @@ LightwalletAPI_Res_GetRandomOuts monero_send_routine::new__parsed_res__get_rando
 		mix_outs.push_back(std::move(amountAndOuts));
 	}
 	return {
-		none, mix_outs
+		boost::none, mix_outs
 	};
 }
 //
@@ -344,8 +344,8 @@ void _reenterable_construct_and_send_tx(
 	const _SendFunds_ConstructAndSendTx_Args &args,
 	//
 	// re-entry params
-	boost::optional<uint64_t> prior_attempt_size_calcd_fee								= none,
-	boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs		= none,
+	boost::optional<uint64_t> prior_attempt_size_calcd_fee								= boost::none,
+	boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs		= boost::none,
 	size_t constructionAttempt = 0
 ) {
 	args.status_update_fn(calculatingFee);
@@ -388,7 +388,7 @@ void _reenterable_construct_and_send_tx(
 		auto parsed_res = (res != boost::property_tree::ptree{})
 			? new__parsed_res__get_random_outs(res)
 			: LightwalletAPI_Res_GetRandomOuts{ boost::none/*err_msg*/, vector<RandomAmountOutputs>{}/*mix_outs*/ };
-		if (parsed_res.err_msg != none) {
+		if (parsed_res.err_msg != boost::none) {
 			SendFunds_Error_RetVals error_retVals;
 			error_retVals.explicit_errMsg = std::move(*(parsed_res.err_msg));
 			args.error_cb_fn(error_retVals);
@@ -484,8 +484,8 @@ void _reenterable_construct_and_send_tx(
  							args.error_cb_fn(error_retVals);
  							return;
  						}
- 						if (decoded.paymentID_string != none) {
- 							if (returning__payment_id != none) {
+ 						if (decoded.paymentID_string != boost::none) {
+ 							if (returning__payment_id != boost::none) {
  								SendFunds_Error_RetVals error_retVals;
  								error_retVals.explicit_errMsg = "Multiple payment IDs in same transaction";
  								args.error_cb_fn(error_retVals);

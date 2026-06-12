@@ -207,7 +207,7 @@ namespace monero_transfer_utils
 		uint64_t fee_quantization_mask,
 		//
 		boost::optional<uint64_t> prior_attempt_size_calcd_fee, // use this for passing step2 "must-reconstruct" return values back in, i.e. re-entry; when nil, defaults to attempt at network min
-		boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs = none // use this to make sure upon re-attempting, the calculated fee will be the result of calculate_fee()
+		boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs = boost::none // use this to make sure upon re-attempting, the calculated fee will be the result of calculate_fee()
 	);
 	struct Tie_Outs_to_Mix_Outs_RetVals
 	{
