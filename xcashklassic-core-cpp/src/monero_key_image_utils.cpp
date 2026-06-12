@@ -59,7 +59,7 @@ bool monero_key_image_utils::new__key_image(
 	if (!r) {
 		retVals.did_error = true;
 		std::ostringstream ss{};
-		ss << "failed to generate_key_derivation(" << tx_public_key << ", " << account_sec_view_key << ")";
+		ss << "failed to generate_key_derivation";
 		retVals.err_string = ss.str();
 		//
 		return false;
@@ -80,7 +80,7 @@ bool monero_key_image_utils::new__key_image(
 	if (!r) {
 		retVals.did_error = true;
 		std::ostringstream ss{};
-		ss << "failed to secret_key_to_public_key(" << in_ephemeral.sec << ")";
+		ss << "failed to secret_key_to_public_key";
 		retVals.err_string = ss.str();
 		//
 		return false;
