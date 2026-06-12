@@ -228,7 +228,7 @@ void emscr_async_bridge::send_funds(const string &args_string)
 		return;
 	}
 	auto optl__task_id = json_root.get_optional<string>("task_id");
-	THROW_WALLET_EXCEPTION_IF(optl__task_id == boost::none<, error::wallet_internal_error, "Code fault: expected task_id (send_funds)");
+	THROW_WALLET_EXCEPTION_IF(optl__task_id == boost::none, error::wallet_internal_error, "Code fault: expected task_id (send_funds)");
 	const string &task_id = *optl__task_id;
     if (_heap_vals_ptrs_by_task_id.find(task_id) != _heap_vals_ptrs_by_task_id.end()) {
 		send_app_handler__error_msg(task_id, "Code fault: existing waiting heap vals container ptr found with that task id");
@@ -298,23 +298,23 @@ void emscr_async_bridge::send_funds(const string &args_string)
 		pub_spendKey,
 		//
 		// re-entry param initialization/prep
-		boost::none<, // passedIn_attemptAt_fee
+		boost::none, // passedIn_attemptAt_fee
 		0, // (re-)construction attempt,
 		//
 		WAIT_FOR_STEP1,
 		//
 		// step1 vals init
-		boost::none<, // final_total_wo_fee
-		boost::none<, // change_amount
-		boost::none<, // using_fee
-		boost::none<, // mixin
+		boost::none, // final_total_wo_fee
+		boost::none, // change_amount
+		boost::none, // using_fee
+		boost::none, // mixin
 		using_outs,
 		//
 		// step2 vals init
-		boost::none<, // signed_serialized_tx_string
-		boost::none<, // tx_hash_string
-		boost::none<, // tx_key_string
-		boost::none< // tx_pub_key_string
+		boost::none, // signed_serialized_tx_string
+		boost::none, // tx_hash_string
+		boost::none, // tx_key_string
+		boost::none // tx_pub_key_string
 	};
 	// exception will be thrown if oom but JIC, since null ptrs are somehow legal in WASM
 	if (!ptrTo_taskAsyncContext) {
@@ -358,11 +358,11 @@ void emscr_async_bridge::send_cb_I__got_unspent_outs(const string &args_string)
 		return;
 	}
 	auto optl__task_id = json_root.get_optional<string>("task_id");
-	THROW_WALLET_EXCEPTION_IF(optl__task_id == boost::none<, error::wallet_internal_error, "Code fault: expected task_id (send_funds)");
+	THROW_WALLET_EXCEPTION_IF(optl__task_id == boost::none, error::wallet_internal_error, "Code fault: expected task_id (send_funds)");
 	const string &task_id = *optl__task_id;
 	//
 	auto optl__err_msg = json_root.get_optional<string>("err_msg");
-	if (optl__err_msg != boost::none< && (*optl__err_msg).size() > 0) { // if args_string actually contains a server error, call error fn with it - this must be done so that the heap alloc'd vals container can be freed
+	if (optl__err_msg != boost::none && (*optl__err_msg).size() > 0) { // if args_string actually contains a server error, call error fn with it - this must be done so that the heap alloc'd vals container can be freed
 		stringstream err_msg_ss;
 		err_msg_ss << "An error occurred while getting your latest balance: " << *(optl__err_msg);
 		send_app_handler__error_msg(task_id, err_msg_ss.str());
@@ -379,7 +379,7 @@ void emscr_async_bridge::send_cb_I__got_unspent_outs(const string &args_string)
 		ptrTo_taskAsyncContext->sec_spendKey,
 		ptrTo_taskAsyncContext->pub_spendKey
 	);
-	if (parsed_res.err_msg != boost::none<) {
+	if (parsed_res.err_msg != boost::none) {
 		send_app_handler__error_msg(task_id, std::move(*(parsed_res.err_msg)));
 		return;
 	}
@@ -411,8 +411,8 @@ void emscr_async_bridge::_reenterable_construct_and_send_tx(const string &task_i
 		ptrTo_taskAsyncContext->fee_per_b,
 		ptrTo_taskAsyncContext->fee_mask,
 		//
-		ptrTo_taskAsyncContext->passedIn_attemptAt_fee // use this for passing step2 "must-reconstruct" return values back in, i.e. re-entry; when boost::none<, defaults to attempt at network min
-		// ^- and this will be 'boost::none<' as initial value
+		ptrTo_taskAsyncContext->passedIn_attemptAt_fee // use this for passing step2 "must-reconstruct" return values back in, i.e. re-entry; when boost::none, defaults to attempt at network min
+		// ^- and this will be 'boost::none' as initial value
 	);
 	if (step1_retVals.errCode != noError) {
 		send_app_handler__error_code(task_id, step1_retVals.errCode, step1_retVals.spendable_balance, step1_retVals.required_balance);
@@ -464,11 +464,11 @@ void emscr_async_bridge::send_cb_II__got_random_outs(const string &args_string)
 		return;
 	}
 	auto optl__task_id = json_root.get_optional<string>("task_id");
-	THROW_WALLET_EXCEPTION_IF(optl__task_id == boost::none<, error::wallet_internal_error, "Code fault: expected task_id (send_funds)");
+	THROW_WALLET_EXCEPTION_IF(optl__task_id == boost::none, error::wallet_internal_error, "Code fault: expected task_id (send_funds)");
 	const string &task_id = *optl__task_id;
 	//
 	auto optl__err_msg = json_root.get_optional<string>("err_msg");
-	if (optl__err_msg != boost::none< && (*optl__err_msg).size() > 0) { // if args_string actually contains a server error, call error fn with it - this must be done so that the heap alloc'd vals container can be freed
+	if (optl__err_msg != boost::none && (*optl__err_msg).size() > 0) { // if args_string actually contains a server error, call error fn with it - this must be done so that the heap alloc'd vals container can be freed
 		stringstream err_msg_ss;
 		err_msg_ss << "An error occurred while getting decoy outputs: " << *(optl__err_msg);
 		send_app_handler__error_msg(task_id, err_msg_ss.str());
@@ -479,7 +479,7 @@ void emscr_async_bridge::send_cb_II__got_random_outs(const string &args_string)
 		return;
 	}
 	auto parsed_res = new__parsed_res__get_random_outs(json_root.get_child("res"));
-	if (parsed_res.err_msg != boost::none<) {
+	if (parsed_res.err_msg != boost::none) {
 		send_app_handler__error_msg(task_id, std::move(*(parsed_res.err_msg)));
 		return;
 	}
@@ -520,16 +520,16 @@ void emscr_async_bridge::send_cb_II__got_random_outs(const string &args_string)
 		ptrTo_taskAsyncContext->constructionAttempt += 1; // increment for re-entry
 		ptrTo_taskAsyncContext->passedIn_attemptAt_fee = step2_retVals.fee_actually_needed; // -> reconstruction attempt's step1's passedIn_attemptAt_fee
 		// reset step1 vals for correctness: (otherwise we end up, for example, with duplicate outs added)
-		ptrTo_taskAsyncContext->step1_retVals__final_total_wo_fee = boost::none<;
-		ptrTo_taskAsyncContext->step1_retVals__change_amount = boost::none<;
-		ptrTo_taskAsyncContext->step1_retVals__using_fee = boost::none<;
-		ptrTo_taskAsyncContext->step1_retVals__mixin = boost::none<;
+		ptrTo_taskAsyncContext->step1_retVals__final_total_wo_fee = boost::none;
+		ptrTo_taskAsyncContext->step1_retVals__change_amount = boost::none;
+		ptrTo_taskAsyncContext->step1_retVals__using_fee = boost::none;
+		ptrTo_taskAsyncContext->step1_retVals__mixin = boost::none;
 		ptrTo_taskAsyncContext->step1_retVals__using_outs.clear(); // critical!
 		// and let's reset step2 just for clarity/explicitness, though we don't expect them to have values yet:
-		ptrTo_taskAsyncContext->step2_retVals__signed_serialized_tx_string = boost::none<;
-		ptrTo_taskAsyncContext->step2_retVals__tx_hash_string = boost::none<;
-		ptrTo_taskAsyncContext->step2_retVals__tx_key_string = boost::none<;
-		ptrTo_taskAsyncContext->step2_retVals__tx_pub_key_string = boost::none<;
+		ptrTo_taskAsyncContext->step2_retVals__signed_serialized_tx_string = boost::none;
+		ptrTo_taskAsyncContext->step2_retVals__tx_hash_string = boost::none;
+		ptrTo_taskAsyncContext->step2_retVals__tx_key_string = boost::none;
+		ptrTo_taskAsyncContext->step2_retVals__tx_pub_key_string = boost::none;
 		//
 		_reenterable_construct_and_send_tx(task_id);
 		return;
@@ -579,11 +579,11 @@ void emscr_async_bridge::send_cb_III__submitted_tx(const string &args_string)
 		return;
 	}
 	auto optl__task_id = json_root.get_optional<string>("task_id");
-	THROW_WALLET_EXCEPTION_IF(optl__task_id == boost::none<, error::wallet_internal_error, "Code fault: expected task_id (send_funds)");
+	THROW_WALLET_EXCEPTION_IF(optl__task_id == boost::none, error::wallet_internal_error, "Code fault: expected task_id (send_funds)");
 	const string &task_id = *optl__task_id;
 	//
 	auto optl__err_msg = json_root.get_optional<string>("err_msg");
-	if (optl__err_msg != boost::none< && (*optl__err_msg).size() > 0) { // if args_string actually contains a server error, call error fn with it - this must be done so that the heap alloc'd vals container can be freed
+	if (optl__err_msg != boost::none && (*optl__err_msg).size() > 0) { // if args_string actually contains a server error, call error fn with it - this must be done so that the heap alloc'd vals container can be freed
 		stringstream err_msg_ss;
 		err_msg_ss << "An error occurred while getting submitting your transaction: " << *(optl__err_msg);
 		send_app_handler__error_msg(task_id, err_msg_ss.str());
@@ -602,13 +602,13 @@ void emscr_async_bridge::send_cb_III__submitted_tx(const string &args_string)
 	success_retVals.mixin = *(ptrTo_taskAsyncContext->step1_retVals__mixin);
 	{
 		boost::optional<string> returning__payment_id = ptrTo_taskAsyncContext->payment_id_string; // separated from submit_raw_tx_fn so that it can be captured w/o capturing all of args
-		if (returning__payment_id == boost::none<) {
+		if (returning__payment_id == boost::none) {
 			auto decoded = monero::address_utils::decodedAddress(ptrTo_taskAsyncContext->to_address_string, ptrTo_taskAsyncContext->nettype);
 			if (decoded.did_error) { // would be very strange...
 				send_app_handler__error_msg(task_id, std::move(*(decoded.err_string)));
 				return;
 			}
-			if (decoded.paymentID_string != boost::none<) {
+			if (decoded.paymentID_string != boost::none) {
 				returning__payment_id = std::move(*(decoded.paymentID_string)); // just preserving this as an original return value - this can probably eventually be removed
 			}
 		}
