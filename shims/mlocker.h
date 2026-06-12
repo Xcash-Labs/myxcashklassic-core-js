@@ -42,3 +42,27 @@ namespace epee
     ~mlocked() {}
   };
 }
+
+template<typename T>
+T& unwrap(epee::mlocked<T>& src)
+{
+  return static_cast<T&>(src);
+}
+
+template<typename T>
+const T& unwrap(const epee::mlocked<T>& src)
+{
+  return static_cast<const T&>(src);
+}
+
+template<typename T>
+T& unwrap(T& src)
+{
+  return src;
+}
+
+template<typename T>
+const T& unwrap(const T& src)
+{
+  return src;
+}
