@@ -47,10 +47,10 @@ namespace monero
 		
 		struct DecodedAddress_RetVals: tools::RetVals_base
 		{
-			optional<string> pub_viewKey_string;
-			optional<string> pub_spendKey_string;
+			boost::optional<string> pub_viewKey_string;
+			boost::optional<string> pub_spendKey_string;
 			bool isSubaddress;
-			optional<string> paymentID_string;
+			boost::optional<string> paymentID_string;
 		};
 		//
 		DecodedAddress_RetVals decodedAddress(const string &addressString, network_type nettype);

@@ -57,7 +57,7 @@ namespace monero_paymentID_utils
 	//
 	// Validating payment IDs
 	bool is_a_valid_or_not_a_payment_id_of_length(const string &str, size_t length);
-	bool is_a_valid_or_not_a_payment_id(optional<string> str); // this checks 16 and then 64 len strs
+	bool is_a_valid_or_not_a_payment_id(boost::optional<string> str); // this checks 16 and then 64 len strs
 }
 
 #endif /* monero_paymentID_utils_hpp */

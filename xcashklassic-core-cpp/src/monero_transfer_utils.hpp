@@ -61,7 +61,7 @@ namespace monero_transfer_utils
 	{
 		uint64_t amount;
 		string public_key;
-		optional<string> rct;
+		boost::optional<string> rct;
 		uint64_t global_index;
 		uint64_t index;
 		string tx_pub_key;
@@ -70,7 +70,7 @@ namespace monero_transfer_utils
 	{
 		uint64_t global_index; // this is, I believe, presently supplied as a string by the API, probably to avoid overflow
 		string public_key;
-		optional<string> rct;
+		boost::optional<string> rct;
 	};
 	struct RandomAmountOutputs
 	{
@@ -196,7 +196,7 @@ namespace monero_transfer_utils
 	void send_step1__prepare_params_for_get_decoys(
 		Send_Step1_RetVals &retVals,
 		//
-		const optional<string>& payment_id_string,
+		const boost::optional<string>& payment_id_string,
 		const vector<uint64_t>& sending_amounts,
 		bool is_sweeping,
 		uint32_t simple_priority,
@@ -206,8 +206,8 @@ namespace monero_transfer_utils
 		uint64_t fee_per_b, // per v8
 		uint64_t fee_quantization_mask,
 		//
-		optional<uint64_t> prior_attempt_size_calcd_fee, // use this for passing step2 "must-reconstruct" return values back in, i.e. re-entry; when nil, defaults to attempt at network min
-		optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs = none // use this to make sure upon re-attempting, the calculated fee will be the result of calculate_fee()
+		boost::optional<uint64_t> prior_attempt_size_calcd_fee, // use this for passing step2 "must-reconstruct" return values back in, i.e. re-entry; when nil, defaults to attempt at network min
+		boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs = none // use this to make sure upon re-attempting, the calculated fee will be the result of calculate_fee()
 	);
 	struct Tie_Outs_to_Mix_Outs_RetVals
 	{
@@ -223,7 +223,7 @@ namespace monero_transfer_utils
 		const vector<SpendableOutput> &using_outs,
 		vector<RandomAmountOutputs> mix_outs_from_server,
 		//
-		const optional<SpendableOutputToRandomAmountOutputs> &prior_attempt_unspent_outs_to_mix_outs
+		const boost::optional<SpendableOutputToRandomAmountOutputs> &prior_attempt_unspent_outs_to_mix_outs
 	);
 	//
 	struct Send_Step2_RetVals
@@ -235,10 +235,10 @@ namespace monero_transfer_utils
 		uint64_t fee_actually_needed; // will be non-zero if tx_must_be_reconstructed
 		//
 		// Success parameters:
-		optional<string> signed_serialized_tx_string;
-		optional<string> tx_hash_string;
-		optional<string> tx_key_string; // this includes additional_tx_keys
-		optional<string> tx_pub_key_string; // from get_tx_pub_key_from_extra()
+		boost::optional<string> signed_serialized_tx_string;
+		boost::optional<string> tx_hash_string;
+		boost::optional<string> tx_key_string; // this includes additional_tx_keys
+		boost::optional<string> tx_pub_key_string; // from get_tx_pub_key_from_extra()
 	};
 	void send_step2__try_create_transaction(
 		Send_Step2_RetVals &retVals,
@@ -247,7 +247,7 @@ namespace monero_transfer_utils
 		const string &sec_viewKey_string,
 		const string &sec_spendKey_string,
 		const vector<string> &to_address_strings,
-		const optional<string>& payment_id_string,
+		const boost::optional<string>& payment_id_string,
 		const vector<uint64_t>& sending_amounts, // this gets passed to create_transaction's 'sending_amount'
 		uint64_t change_amount,
 		uint64_t fee_amount,
@@ -268,12 +268,12 @@ namespace monero_transfer_utils
 	{
 		CreateTransactionErrorCode errCode;
 		//
-		optional<string> signed_serialized_tx_string;
-		optional<string> tx_hash_string;
-		optional<string> tx_key_string; // this includes additional_tx_keys
-		optional<string> tx_pub_key_string; // from get_tx_pub_key_from_extra()
-		optional<transaction> tx; // for block weight
-		optional<size_t> txBlob_byteLength;
+		boost::optional<string> signed_serialized_tx_string;
+		boost::optional<string> tx_hash_string;
+		boost::optional<string> tx_key_string; // this includes additional_tx_keys
+		boost::optional<string> tx_pub_key_string; // from get_tx_pub_key_from_extra()
+		boost::optional<transaction> tx; // for block weight
+		boost::optional<size_t> txBlob_byteLength;
 	};
 	void convenience__create_transaction(
 		Convenience_TransactionConstruction_RetVals &retVals,
@@ -281,7 +281,7 @@ namespace monero_transfer_utils
 		const string &sec_viewKey_string,
 		const string &sec_spendKey_string,
 		const vector<string> &to_address_string,
-		const optional<string>& payment_id_string,
+		const boost::optional<string>& payment_id_string,
 		const vector<uint64_t>& sending_amounts,
 		uint64_t change_amount,
 		uint64_t fee_amount,
@@ -295,9 +295,9 @@ namespace monero_transfer_utils
 	{
 		CreateTransactionErrorCode errCode;
 		//
-		optional<transaction> tx;
-		optional<secret_key> tx_key;
-		optional<vector<secret_key>> additional_tx_keys;
+		boost::optional<transaction> tx;
+		boost::optional<secret_key> tx_key;
+		boost::optional<vector<secret_key>> additional_tx_keys;
 	};
 	void create_transaction(
 		TransactionConstruction_RetVals &retVals,

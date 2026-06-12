@@ -100,7 +100,7 @@ bool monero_paymentID_utils::is_a_valid_or_not_a_payment_id_of_length(const stri
 	}
 	return false;
 }
-bool monero_paymentID_utils::is_a_valid_or_not_a_payment_id(optional<string> str)
+bool monero_paymentID_utils::is_a_valid_or_not_a_payment_id(boost::optional<string> str)
 {
 	if (str == boost::none || str->empty()) {
 		return true; // not a payment id b/c it's nil

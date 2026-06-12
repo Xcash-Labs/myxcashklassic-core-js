@@ -54,7 +54,7 @@ using namespace monero_key_image_utils; // for API response parsing
 using namespace monero_send_routine;
 //
 //
-optional<uint64_t> _possible_uint64_from_json(
+boost::optional<uint64_t> _possible_uint64_from_json(
 	const boost::property_tree::ptree &res,
 	const string &fieldname
 ) { // throws
@@ -89,7 +89,7 @@ LightwalletAPI_Req_GetUnspentOuts monero_send_routine::new__req_params__get_unsp
 
 LightwalletAPI_Req_GetRandomOuts monero_send_routine::new__req_params__get_random_outs(
 	const vector<SpendableOutput> &step1__using_outs,
-	const optional<SpendableOutputToRandomAmountOutputs> &prior_attempt_unspent_outs_to_mix_outs
+	const boost::optional<SpendableOutputToRandomAmountOutputs> &prior_attempt_unspent_outs_to_mix_outs
 ) {
 	// request decoys for any newly selected inputs
 	std::vector<SpendableOutput> decoy_requests;
@@ -130,7 +130,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 	uint64_t final__per_byte_fee = 0;
 	uint64_t fee_mask = 10000; // just a fallback value - no real reason to set this here normally
 	try {
-		optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "per_byte_fee");
+		boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "per_byte_fee");
 		if (possible__uint64 != none) {
 			final__per_byte_fee = *possible__uint64;
 		}
@@ -143,7 +143,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 		};
 	}
 	try {
-		optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "fee_mask");
+		boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "fee_mask");
 		if (possible__uint64 != none) {
 			fee_mask = *possible__uint64;
 		}
@@ -157,7 +157,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 	}
 	if (final__per_byte_fee == 0) {
 		try {
-			optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "per_kb_fee");
+			boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(res, "per_kb_fee");
 			if (possible__uint64 != none) {
 				final__per_byte_fee = (*possible__uint64) / 1024; // scale from kib to b
 				fee_mask = 10000; // just to be explicit
@@ -201,7 +201,7 @@ LightwalletAPI_Res_GetUnspentOuts monero_send_routine::new__parsed_res__get_unsp
 		}
 		uint64_t output__index;
 		try {
-			optional<uint64_t> possible__uint64 = _possible_uint64_from_json(output_desc.second, "index");
+			boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(output_desc.second, "index");
 			if (possible__uint64 != none) {
 				output__index = *possible__uint64; // expecting this to exist
 			} else { // bail
@@ -274,7 +274,7 @@ LightwalletAPI_Res_GetRandomOuts monero_send_routine::new__parsed_res__get_rando
 		assert(mix_out_desc.first.empty()); // array elements have no names
 		auto amountAndOuts = RandomAmountOutputs{};
 		try {
-			optional<uint64_t> possible__uint64 = _possible_uint64_from_json(mix_out_desc.second, "amount");
+			boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(mix_out_desc.second, "amount");
 			if (possible__uint64 != none) {
 				amountAndOuts.amount = *possible__uint64;
 			}
@@ -288,7 +288,7 @@ LightwalletAPI_Res_GetRandomOuts monero_send_routine::new__parsed_res__get_rando
 			assert(mix_out_output_desc.first.empty()); // array elements have no names
 			auto amountOutput = RandomAmountOutput{};
 			try {
-				optional<uint64_t> possible__uint64 = _possible_uint64_from_json(mix_out_output_desc.second, "global_index");
+				boost::optional<uint64_t> possible__uint64 = _possible_uint64_from_json(mix_out_output_desc.second, "global_index");
 				if (possible__uint64 != none) {
 					amountOutput.global_index = *possible__uint64;
 				}
@@ -315,7 +315,7 @@ struct _SendFunds_ConstructAndSendTx_Args
 	const string &sec_viewKey_string;
 	const string &sec_spendKey_string;
 	const vector<string>& to_address_strings;
-	optional<string> payment_id_string;
+	boost::optional<string> payment_id_string;
 	const vector<uint64_t>& sending_amounts;
 	bool is_sweeping;
 	uint32_t simple_priority;
@@ -336,16 +336,16 @@ struct _SendFunds_ConstructAndSendTx_Args
 	const secret_key &sec_viewKey;
 	const secret_key &sec_spendKey;
 	//
-	optional<uint64_t> prior_attempt_size_calcd_fee;
-	optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs;
+	boost::optional<uint64_t> prior_attempt_size_calcd_fee;
+	boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs;
 	size_t constructionAttempt;
 };
 void _reenterable_construct_and_send_tx(
 	const _SendFunds_ConstructAndSendTx_Args &args,
 	//
 	// re-entry params
-	optional<uint64_t> prior_attempt_size_calcd_fee								= none,
-	optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs		= none,
+	boost::optional<uint64_t> prior_attempt_size_calcd_fee								= none,
+	boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs		= none,
 	size_t constructionAttempt = 0
 ) {
 	args.status_update_fn(calculatingFee);
@@ -475,7 +475,7 @@ void _reenterable_construct_and_send_tx(
 			success_retVals.total_sent = step1_retVals.final_total_wo_fee + step1_retVals.using_fee;
 			success_retVals.mixin = step1_retVals.mixin;
 			{
-				optional<string> returning__payment_id = args.payment_id_string; // separated from submit_raw_tx_fn so that it can be captured w/o capturing all of args (FIXME: does this matter?)
+				boost::optional<string> returning__payment_id = args.payment_id_string; // separated from submit_raw_tx_fn so that it can be captured w/o capturing all of args (FIXME: does this matter?)
 				for (const auto& address : args.to_address_strings) {
  						auto decoded = monero::address_utils::decodedAddress(address, args.nettype);
  						if (decoded.did_error) { // would be very strange...

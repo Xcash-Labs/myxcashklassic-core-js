@@ -51,7 +51,7 @@ using namespace monero_key_image_utils; // for API response parsing
 
 namespace {
 CreateTransactionErrorCode _add_pid_to_tx_extra(
-	const optional<string>& payment_id_string,
+	const boost::optional<string>& payment_id_string,
 	vector<uint8_t> &extra
 ) { // Detect hash8 or hash32 char hex string as pid and configure 'extra' accordingly
 	bool r = false;
@@ -184,7 +184,7 @@ namespace
 void monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
 	Send_Step1_RetVals &retVals,
 	//
-	const optional<string>& payment_id_string,
+	const boost::optional<string>& payment_id_string,
 	const vector<uint64_t>& sending_amounts,
 	bool is_sweeping,
 	uint32_t simple_priority,
@@ -194,8 +194,8 @@ void monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
 	uint64_t fee_per_b, // per v8
 	uint64_t fee_quantization_mask,
 	//
-	optional<uint64_t> prior_attempt_size_calcd_fee,
-	optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs
+	boost::optional<uint64_t> prior_attempt_size_calcd_fee,
+	boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs
 ) {
 	retVals = {};
 	//
@@ -364,7 +364,7 @@ void monero_transfer_utils::pre_step2_tie_unspent_outs_to_mix_outs_for_all_futur
 	const vector<SpendableOutput> &using_outs,
 	vector<RandomAmountOutputs> mix_outs_from_server,
 	//
-	const optional<SpendableOutputToRandomAmountOutputs> &prior_attempt_unspent_outs_to_mix_outs
+	const boost::optional<SpendableOutputToRandomAmountOutputs> &prior_attempt_unspent_outs_to_mix_outs
 ) {
 	retVals.errCode = noError;
 	//
@@ -432,7 +432,7 @@ void monero_transfer_utils::send_step2__try_create_transaction(
 	const string &sec_viewKey_string,
 	const string &sec_spendKey_string,
 	const vector<string> &to_address_strings,
-	const optional<string>& payment_id_string,
+	const boost::optional<string>& payment_id_string,
 	const vector<uint64_t>& sending_amounts,
 	uint64_t change_amount,
 	uint64_t fee_amount,
@@ -764,7 +764,7 @@ void monero_transfer_utils::convenience__create_transaction(
 	const string &sec_viewKey_string,
 	const string &sec_spendKey_string,
 	const vector<string> &to_address_strings,
-	const optional<string>& payment_id_string,
+	const boost::optional<string>& payment_id_string,
 	const vector<uint64_t>& sending_amounts,
 	uint64_t change_amount,
 	uint64_t fee_amount,

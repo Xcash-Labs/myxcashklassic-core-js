@@ -351,21 +351,21 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__sweepDust)
 	ss << DG_presweep__unspent_outs_json;
 	boost::property_tree::json_parser::read_json(ss, pt);
 	boost::property_tree::ptree unspent_outs = pt.get_child("unspent_outs");
-	optional<boost::property_tree::ptree> prior_attempt_unspent_outs_to_mix_outs = none;
+	boost::optional<boost::property_tree::ptree> prior_attempt_unspent_outs_to_mix_outs = none;
 	//
 	//
 	// Send algorithm:
 	// (Not implemented in C++ b/c the algorithm is split at the points (function interfaces) where requests must be done in e.g. JS-land, and implementing the retry integration in C++ would effectively be emscripten-only since it'd have to call out to C++. Plus this lets us retain the choice to retain synchrony
 	bool tx_must_be_reconstructed = true; // for ease of writing this code, start this off true & structure whole thing as while loop
-	optional<string> fee_actually_needed_string = none;
+	boost::optional<string> fee_actually_needed_string = none;
 	size_t construction_attempt_n = 0;
 	while (tx_must_be_reconstructed) {
 		construction_attempt_n += 1; // merely kept for assertion purposes
 		//
-		optional<string> mixin_string;
-		optional<string> change_amount_string;
-		optional<string> using_fee_string;
-		optional<string> final_total_wo_fee_string;
+		boost::optional<string> mixin_string;
+		boost::optional<string> change_amount_string;
+		boost::optional<string> using_fee_string;
+		boost::optional<string> final_total_wo_fee_string;
 		boost::property_tree::ptree using_outs;
 		{
 			boost::property_tree::ptree root;
@@ -396,17 +396,17 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__sweepDust)
 			ret_stream << ret_string;
 			boost::property_tree::ptree ret_tree;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				if ((CreateTransactionErrorCode)*err_code == monero_transfer_utils::needMoreMoneyThanFound) {
-					optional<string> spendable_balance_string = ret_tree.get_optional<string>("spendable_balance");
+					boost::optional<string> spendable_balance_string = ret_tree.get_optional<string>("spendable_balance");
 					BOOST_REQUIRE(spendable_balance_string != none);
 					BOOST_REQUIRE((*spendable_balance_string).size() > 0);
 		//			uint64_t fee = stoull(*fee_string);
 		//			BOOST_REQUIRE(fee == 135000000);
 					cout << "bridge__transfers__send__sweepDust: step1: needMoreMoneyThanFound: spendable_balance " << *spendable_balance_string << endl;
 					//
-					optional<string> required_balance_string = ret_tree.get_optional<string>("required_balance");
+					boost::optional<string> required_balance_string = ret_tree.get_optional<string>("required_balance");
 					BOOST_REQUIRE(required_balance_string != none);
 					BOOST_REQUIRE((*required_balance_string).size() > 0);
 		//			uint64_t fee = stoull(*fee_string);
@@ -480,7 +480,7 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__sweepDust)
 			stringstream ret_stream;
 			ret_stream << ret_string;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>(ret_json_key__any__err_code());
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>(ret_json_key__any__err_code());
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				auto err_msg = err_msg_from_err_code__create_transaction((CreateTransactionErrorCode)*err_code);
 				BOOST_REQUIRE_MESSAGE(false, err_msg);
@@ -529,7 +529,7 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__sweepDust)
 			stringstream ret_stream;
 			ret_stream << ret_string;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				auto err_msg = err_msg_from_err_code__create_transaction((CreateTransactionErrorCode)*err_code);
 				BOOST_REQUIRE_MESSAGE(false, err_msg);
@@ -547,9 +547,9 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__sweepDust)
 				BOOST_REQUIRE(construction_attempt_n < 7); // not generally expecting to have to do this more than once or twice - i did see < 3 insufficient once so raised this
 				continue; // proceed to next iteration (re-enter tx construction at step1(II) with fee_actually_needed_string from step2(I))
 			}
-			optional<string> tx_hash = ret_tree.get_optional<string>("tx_hash");
-			optional<string> tx_key_string = ret_tree.get_optional<string>("tx_key");
-			optional<string> serialized_signed_tx = ret_tree.get_optional<string>("serialized_signed_tx");
+			boost::optional<string> tx_hash = ret_tree.get_optional<string>("tx_hash");
+			boost::optional<string> tx_key_string = ret_tree.get_optional<string>("tx_key");
+			boost::optional<string> serialized_signed_tx = ret_tree.get_optional<string>("serialized_signed_tx");
 			BOOST_REQUIRE(serialized_signed_tx != none);
 			BOOST_REQUIRE((*serialized_signed_tx).size() > 0);
 			cout << "bridge__transfers__send__sweepDust: serialized_signed_tx: " << *serialized_signed_tx << endl;
@@ -574,10 +574,10 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__amountWOnlyDusty)
 	boost::property_tree::json_parser::read_json(ss, pt);
 	boost::property_tree::ptree unspent_outs = pt.get_child("unspent_outs");
 	//
-	optional<string> mixin_string;
-	optional<string> change_amount_string;
-	optional<string> using_fee_string;
-	optional<string> final_total_wo_fee_string;
+	boost::optional<string> mixin_string;
+	boost::optional<string> change_amount_string;
+	boost::optional<string> using_fee_string;
+	boost::optional<string> final_total_wo_fee_string;
 	boost::property_tree::ptree using_outs;
 	boost::property_tree::ptree root;
 	root.put("is_sweeping", "false");
@@ -594,7 +594,7 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__amountWOnlyDusty)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
+	boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
 	BOOST_REQUIRE_MESSAGE(err_code == none, "Expected no error");
 	BOOST_REQUIRE_MESSAGE(ret_tree.get<string>("using_fee") == string("39380000"), "Expected using_fee of 39380000");
 	BOOST_REQUIRE_MESSAGE(ret_tree.get<string>("final_total_wo_fee") == string("1000000"), "Expected final_total_wo_fee of 1000000");
@@ -615,20 +615,20 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__amount)
 	ss << DG_postsweep__unspent_outs_json;
 	boost::property_tree::json_parser::read_json(ss, pt);
 	boost::property_tree::ptree unspent_outs = pt.get_child("unspent_outs");
-	optional<boost::property_tree::ptree> prior_attempt_unspent_outs_to_mix_outs = none;
+	boost::optional<boost::property_tree::ptree> prior_attempt_unspent_outs_to_mix_outs = none;
 	//
 	//
 	// Send algorithm:
 	bool tx_must_be_reconstructed = true; // for ease of writing this code, start this off true & structure whole thing as while loop
-	optional<string> fee_actually_needed_string = none;
+	boost::optional<string> fee_actually_needed_string = none;
 	size_t construction_attempt_n = 0;
 	while (tx_must_be_reconstructed) {
 		construction_attempt_n += 1; // merely kept for assertion purposes
 		//
-		optional<string> mixin_string;
-		optional<string> change_amount_string;
-		optional<string> using_fee_string;
-		optional<string> final_total_wo_fee_string;
+		boost::optional<string> mixin_string;
+		boost::optional<string> change_amount_string;
+		boost::optional<string> using_fee_string;
+		boost::optional<string> final_total_wo_fee_string;
 		boost::property_tree::ptree using_outs;
 		{
 			boost::property_tree::ptree root;
@@ -659,17 +659,17 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__amount)
 			ret_stream << ret_string;
 			boost::property_tree::ptree ret_tree;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				if ((CreateTransactionErrorCode)*err_code == monero_transfer_utils::needMoreMoneyThanFound) {
-					optional<string> spendable_balance_string = ret_tree.get_optional<string>("spendable_balance");
+					boost::optional<string> spendable_balance_string = ret_tree.get_optional<string>("spendable_balance");
 					BOOST_REQUIRE(spendable_balance_string != none);
 					BOOST_REQUIRE((*spendable_balance_string).size() > 0);
 					//			uint64_t fee = stoull(*fee_string);
 					//			BOOST_REQUIRE(fee == 135000000);
 					cout << "bridge__transfers__send__amount: step1: needMoreMoneyThanFound: spendable_balance " << *spendable_balance_string << endl;
 					//
-					optional<string> required_balance_string = ret_tree.get_optional<string>("required_balance");
+					boost::optional<string> required_balance_string = ret_tree.get_optional<string>("required_balance");
 					BOOST_REQUIRE(required_balance_string != none);
 					BOOST_REQUIRE((*required_balance_string).size() > 0);
 					//			uint64_t fee = stoull(*fee_string);
@@ -743,7 +743,7 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__amount)
 			stringstream ret_stream;
 			ret_stream << ret_string;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>(ret_json_key__any__err_code());
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>(ret_json_key__any__err_code());
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				auto err_msg = err_msg_from_err_code__create_transaction((CreateTransactionErrorCode)*err_code);
 				BOOST_REQUIRE_MESSAGE(false, err_msg);
@@ -793,7 +793,7 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__amount)
 			stringstream ret_stream;
 			ret_stream << ret_string;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				auto err_msg = err_msg_from_err_code__create_transaction((CreateTransactionErrorCode)*err_code);
 				BOOST_REQUIRE_MESSAGE(false, err_msg);
@@ -811,10 +811,10 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send__amount)
 				BOOST_REQUIRE(construction_attempt_n < 3); // not generally expecting to have to do this more than once or twice
 				continue; // proceed to next iteration (re-enter tx construction at step1(II) with fee_actually_needed_string from step2(I))
 			}
-			optional<string> tx_hash = ret_tree.get_optional<string>("tx_hash");
-			optional<string> tx_key_string = ret_tree.get_optional<string>("tx_key");
-			optional<string> tx_pub_key_string = ret_tree.get_optional<string>("tx_pub_key");
-			optional<string> serialized_signed_tx = ret_tree.get_optional<string>("serialized_signed_tx");
+			boost::optional<string> tx_hash = ret_tree.get_optional<string>("tx_hash");
+			boost::optional<string> tx_key_string = ret_tree.get_optional<string>("tx_key");
+			boost::optional<string> tx_pub_key_string = ret_tree.get_optional<string>("tx_pub_key");
+			boost::optional<string> serialized_signed_tx = ret_tree.get_optional<string>("serialized_signed_tx");
 			BOOST_REQUIRE(serialized_signed_tx != none);
 			BOOST_REQUIRE((*serialized_signed_tx).size() > 0);
 			cout << "bridge__transfers__send__amount: serialized_signed_tx: " << *serialized_signed_tx << endl;
@@ -844,23 +844,23 @@ BOOST_AUTO_TEST_CASE(bridged__decode_address)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	if (err_string != none) {
 		BOOST_REQUIRE_MESSAGE(false, *err_string);
 	}
-	optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
+	boost::optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
 	BOOST_REQUIRE(pub_viewKey_string != none);
 	BOOST_REQUIRE((*pub_viewKey_string).size() > 0);
 	cout << "bridged__decode_address: pub_viewKey_string: " << *pub_viewKey_string << endl;
-	optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
+	boost::optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
 	BOOST_REQUIRE(pub_spendKey_string != none);
 	BOOST_REQUIRE((*pub_spendKey_string).size() > 0);
 	cout << "bridged__decode_address: pub_spendKey_string: " << *pub_spendKey_string << endl;
-	optional<string> paymentID_string = ret_tree.get_optional<string>("paymentId");
+	boost::optional<string> paymentID_string = ret_tree.get_optional<string>("paymentId");
 	BOOST_REQUIRE(paymentID_string != none);
 	BOOST_REQUIRE((*paymentID_string).size() > 0);
 	cout << "bridged__decode_address: paymentID_string: " << *paymentID_string << endl;
-	optional<bool> isSubaddress = ret_tree.get_optional<bool>("isSubaddress");
+	boost::optional<bool> isSubaddress = ret_tree.get_optional<bool>("isSubaddress");
 	BOOST_REQUIRE(isSubaddress != none);
 	BOOST_REQUIRE(*isSubaddress == false);
 	cout << "bridged__decode_address: isSubaddress: " << *isSubaddress << endl;
@@ -931,39 +931,39 @@ BOOST_AUTO_TEST_CASE(bridged__new_wallet)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	if (err_string != none) {
 		BOOST_REQUIRE_MESSAGE(false, *err_string);
 	}
-	optional<string> mnemonic_string = ret_tree.get_optional<string>("mnemonic");
+	boost::optional<string> mnemonic_string = ret_tree.get_optional<string>("mnemonic");
 	BOOST_REQUIRE(mnemonic_string != none);
 	BOOST_REQUIRE((*mnemonic_string).size() > 0);
 	cout << "bridged__new_wallet: mnemonic: " << *mnemonic_string << endl;
-	optional<string> mnemonic_language = ret_tree.get_optional<string>("mnemonicLanguage");
+	boost::optional<string> mnemonic_language = ret_tree.get_optional<string>("mnemonicLanguage");
 	BOOST_REQUIRE(mnemonic_language != none);
 	BOOST_REQUIRE((*mnemonic_language).size() > 0);
 	cout << "bridged__new_wallet: mnemonic_language: " << *mnemonic_language << endl;
-	optional<string> sec_seed_string = ret_tree.get_optional<string>("seed");
+	boost::optional<string> sec_seed_string = ret_tree.get_optional<string>("seed");
 	BOOST_REQUIRE(sec_seed_string != none);
 	BOOST_REQUIRE((*sec_seed_string).size() > 0);
 	cout << "bridged__new_wallet: sec_seed: " << *sec_seed_string << endl;
-	optional<string> address_string = ret_tree.get_optional<string>("address");
+	boost::optional<string> address_string = ret_tree.get_optional<string>("address");
 	BOOST_REQUIRE(address_string != none);
 	BOOST_REQUIRE((*address_string).size() > 0);
 	cout << "bridged__new_wallet: address: " << *address_string << endl;
-	optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
+	boost::optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
 	BOOST_REQUIRE(pub_viewKey_string != none);
 	BOOST_REQUIRE((*pub_viewKey_string).size() > 0);
 	cout << "bridged__new_wallet: pub_viewKey_string: " << *pub_viewKey_string << endl;
-	optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
+	boost::optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
 	BOOST_REQUIRE(pub_spendKey_string != none);
 	BOOST_REQUIRE((*pub_spendKey_string).size() > 0);
 	cout << "bridged__new_wallet: pub_spendKey_string: " << *pub_spendKey_string << endl;
-	optional<string> sec_viewKey_string = ret_tree.get_optional<string>("privateViewKey");
+	boost::optional<string> sec_viewKey_string = ret_tree.get_optional<string>("privateViewKey");
 	BOOST_REQUIRE(sec_viewKey_string != none);
 	BOOST_REQUIRE((*sec_viewKey_string).size() > 0);
 	cout << "bridged__new_wallet: sec_viewKey_string: " << *sec_viewKey_string << endl;
-	optional<string> sec_spendKey_string = ret_tree.get_optional<string>("privateSpendKey");
+	boost::optional<string> sec_spendKey_string = ret_tree.get_optional<string>("privateSpendKey");
 	BOOST_REQUIRE(sec_spendKey_string != none);
 	BOOST_REQUIRE((*sec_spendKey_string).size() > 0);
 	cout << "bridged__new_wallet: sec_spendKey_string: " << *sec_spendKey_string << endl;
@@ -1007,11 +1007,11 @@ BOOST_AUTO_TEST_CASE(bridged__mnemonic_from_seed)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	if (err_string != none) {
 		BOOST_REQUIRE_MESSAGE(false, *err_string);
 	}
-	optional<string> mnemonic_string = ret_tree.get_optional<string>("retVal");
+	boost::optional<string> mnemonic_string = ret_tree.get_optional<string>("retVal");
 	BOOST_REQUIRE(mnemonic_string != none);
 	BOOST_REQUIRE((*mnemonic_string).size() > 0);
 	cout << "bridged__mnemonic_from_seed: mnemonic: " << *mnemonic_string << endl;
@@ -1030,36 +1030,36 @@ BOOST_AUTO_TEST_CASE(bridged__seed_and_keys_from_mnemonic)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	if (err_string != none) {
 		BOOST_REQUIRE_MESSAGE(false, *err_string);
 	}
-	optional<string> mnemonic_language = ret_tree.get_optional<string>("mnemonicLanguage");
+	boost::optional<string> mnemonic_language = ret_tree.get_optional<string>("mnemonicLanguage");
 	BOOST_REQUIRE(mnemonic_language != none);
 	BOOST_REQUIRE((*mnemonic_language).size() > 0);
 	cout << "bridged__seed_and_keys_from_mnemonic: mnemonic_language: " << *mnemonic_language << endl;
-	optional<string> sec_seed_string = ret_tree.get_optional<string>("seed");
+	boost::optional<string> sec_seed_string = ret_tree.get_optional<string>("seed");
 	BOOST_REQUIRE(sec_seed_string != none);
 	BOOST_REQUIRE((*sec_seed_string).size() > 0);
 	cout << "bridged__seed_and_keys_from_mnemonic: sec_seed: " << *sec_seed_string << endl;
-	optional<string> address_string = ret_tree.get_optional<string>("address");
+	boost::optional<string> address_string = ret_tree.get_optional<string>("address");
 	BOOST_REQUIRE(address_string != none);
 	BOOST_REQUIRE((*address_string).size() > 0);
 	cout << "bridged__seed_and_keys_from_mnemonic: address: " << *address_string << endl;
 	BOOST_REQUIRE((*address_string) == "43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg");
-	optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
+	boost::optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
 	BOOST_REQUIRE(pub_viewKey_string != none);
 	BOOST_REQUIRE((*pub_viewKey_string).size() > 0);
 	cout << "bridged__seed_and_keys_from_mnemonic: pub_viewKey_string: " << *pub_viewKey_string << endl;
-	optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
+	boost::optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
 	BOOST_REQUIRE(pub_spendKey_string != none);
 	BOOST_REQUIRE((*pub_spendKey_string).size() > 0);
 	cout << "bridged__seed_and_keys_from_mnemonic: pub_spendKey_string: " << *pub_spendKey_string << endl;
-	optional<string> sec_viewKey_string = ret_tree.get_optional<string>("privateViewKey");
+	boost::optional<string> sec_viewKey_string = ret_tree.get_optional<string>("privateViewKey");
 	BOOST_REQUIRE(sec_viewKey_string != none);
 	BOOST_REQUIRE((*sec_viewKey_string).size() > 0);
 	cout << "bridged__seed_and_keys_from_mnemonic: sec_viewKey_string: " << *sec_viewKey_string << endl;
-	optional<string> sec_spendKey_string = ret_tree.get_optional<string>("privateSpendKey");
+	boost::optional<string> sec_spendKey_string = ret_tree.get_optional<string>("privateSpendKey");
 	BOOST_REQUIRE(sec_spendKey_string != none);
 	BOOST_REQUIRE((*sec_spendKey_string).size() > 0);
 	cout << "bridged__seed_and_keys_from_mnemonic: sec_spendKey_string: " << *sec_spendKey_string << endl;
@@ -1080,10 +1080,10 @@ BOOST_AUTO_TEST_CASE(bridged__validate_components_for_login__subaddress)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	BOOST_REQUIRE(err_string != none);
 	BOOST_REQUIRE((*err_string).compare("Can't log in with a sub-address") == 0);
-	optional<bool> isValid = ret_tree.get_optional<bool>("isValid");
+	boost::optional<bool> isValid = ret_tree.get_optional<bool>("isValid");
 	BOOST_REQUIRE(isValid == none || *isValid == false);
 }
 BOOST_AUTO_TEST_CASE(bridged__validate_components_for_login)
@@ -1102,21 +1102,21 @@ BOOST_AUTO_TEST_CASE(bridged__validate_components_for_login)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	if (err_string != none) {
 		BOOST_REQUIRE_MESSAGE(false, *err_string);
 	}
-	optional<bool> isValid = ret_tree.get_optional<bool>("isValid");
+	boost::optional<bool> isValid = ret_tree.get_optional<bool>("isValid");
 	BOOST_REQUIRE(isValid == true);
 	cout << "bridged__validate_components_for_login: isValid: " << isValid << endl;
-	optional<bool> isInViewOnlyMode = ret_tree.get_optional<bool>("isViewOnly");
+	boost::optional<bool> isInViewOnlyMode = ret_tree.get_optional<bool>("isViewOnly");
 	BOOST_REQUIRE(isInViewOnlyMode == false);
 	cout << "bridged__validate_components_for_login: isInViewOnlyMode: " << isInViewOnlyMode << endl;
-	optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
+	boost::optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
 	BOOST_REQUIRE(pub_viewKey_string != none);
 	BOOST_REQUIRE((*pub_viewKey_string).size() > 0);
 	cout << "bridged__validate_components_for_login: pub_viewKey_string: " << *pub_viewKey_string << endl;
-	optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
+	boost::optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
 	BOOST_REQUIRE(pub_spendKey_string != none);
 	BOOST_REQUIRE((*pub_spendKey_string).size() > 0);
 	cout << "bridged__validate_components_for_login: pub_spendKey_string: " << *pub_spendKey_string << endl;
@@ -1135,11 +1135,11 @@ BOOST_AUTO_TEST_CASE(bridged__estimated_tx_network_fee)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	if (err_string != none) {
 		BOOST_REQUIRE_MESSAGE(false, *err_string);
 	}
-	optional<string> fee_string = ret_tree.get_optional<string>("retVal");
+	boost::optional<string> fee_string = ret_tree.get_optional<string>("retVal");
 	BOOST_REQUIRE(fee_string != none);
 	BOOST_REQUIRE((*fee_string).size() > 0);
 	uint64_t fee = stoull(*fee_string);
@@ -1163,11 +1163,11 @@ BOOST_AUTO_TEST_CASE(bridged__generate_key_image)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	if (err_string != none) {
 		BOOST_REQUIRE_MESSAGE(false, *err_string);
 	}
-	optional<string> key_image_string = ret_tree.get_optional<string>("retVal");
+	boost::optional<string> key_image_string = ret_tree.get_optional<string>("retVal");
 	BOOST_REQUIRE(key_image_string != none);
 	BOOST_REQUIRE((*key_image_string).size() > 0);
 	BOOST_REQUIRE(*key_image_string == "ae30ee23051dc0bdf10303fbd3b7d8035a958079eb66516b1740f2c9b02c804e");
@@ -1187,29 +1187,29 @@ BOOST_AUTO_TEST_CASE(bridged__address_and_keys_from_seed)
 	ret_stream << ret_string;
 	boost::property_tree::ptree ret_tree;
 	boost::property_tree::read_json(ret_stream, ret_tree);
-	optional<string> err_string = ret_tree.get_optional<string>("err_msg");
+	boost::optional<string> err_string = ret_tree.get_optional<string>("err_msg");
 	if (err_string != none) {
 		BOOST_REQUIRE_MESSAGE(false, *err_string);
 	}
-	optional<string> address_string = ret_tree.get_optional<string>("address");
+	boost::optional<string> address_string = ret_tree.get_optional<string>("address");
 	BOOST_REQUIRE(address_string != none);
 	BOOST_REQUIRE((*address_string).size() > 0);
 	cout << "bridged__address_and_keys_from_seed: address: " << *address_string << endl;
 	BOOST_REQUIRE(*address_string == "43zxvpcj5Xv9SEkNXbMCG7LPQStHMpFCQCmkmR4u5nzjWwq5Xkv5VmGgYEsHXg4ja2FGRD5wMWbBVMijDTqmmVqm93wHGkg");
-	optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
+	boost::optional<string> pub_viewKey_string = ret_tree.get_optional<string>("publicViewKey");
 	BOOST_REQUIRE(pub_viewKey_string != none);
 	BOOST_REQUIRE((*pub_viewKey_string).size() > 0);
 	cout << "bridged__address_and_keys_from_seed: pub_viewKey_string: " << *pub_viewKey_string << endl;
-	optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
+	boost::optional<string> pub_spendKey_string = ret_tree.get_optional<string>("publicSpendKey");
 	BOOST_REQUIRE(pub_spendKey_string != none);
 	BOOST_REQUIRE((*pub_spendKey_string).size() > 0);
 	cout << "bridged__address_and_keys_from_seed: pub_spendKey_string: " << *pub_spendKey_string << endl;
-	optional<string> sec_viewKey_string = ret_tree.get_optional<string>("privateViewKey");
+	boost::optional<string> sec_viewKey_string = ret_tree.get_optional<string>("privateViewKey");
 	BOOST_REQUIRE(sec_viewKey_string != none);
 	BOOST_REQUIRE((*sec_viewKey_string).size() > 0);
 	BOOST_REQUIRE(*sec_viewKey_string == "7bea1907940afdd480eff7c4bcadb478a0fbb626df9e3ed74ae801e18f53e104");
 	cout << "bridged__address_and_keys_from_seed: sec_viewKey_string: " << *sec_viewKey_string << endl;
-	optional<string> sec_spendKey_string = ret_tree.get_optional<string>("privateSpendKey");
+	boost::optional<string> sec_spendKey_string = ret_tree.get_optional<string>("privateSpendKey");
 	BOOST_REQUIRE(sec_spendKey_string != none);
 	BOOST_REQUIRE((*sec_spendKey_string).size() > 0);
 	BOOST_REQUIRE(*sec_spendKey_string == "4e6d43cd03812b803c6f3206689f5fcc910005fc7e91d50d79b0776dbefcd803");
@@ -1236,20 +1236,20 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send_stagenet_coinbase)
 	ss << OM_stagenet__unspent_outs_json;
 	boost::property_tree::json_parser::read_json(ss, pt);
 	boost::property_tree::ptree unspent_outs = pt.get_child("unspent_outs");
-	optional<boost::property_tree::ptree> prior_attempt_unspent_outs_to_mix_outs = none;
+	boost::optional<boost::property_tree::ptree> prior_attempt_unspent_outs_to_mix_outs = none;
 	//
 	//
 	// Send algorithm:
 	bool tx_must_be_reconstructed = true; // for ease of writing this code, start this off true & structure whole thing as while loop
-	optional<string> fee_actually_needed_string = none;
+	boost::optional<string> fee_actually_needed_string = none;
 	size_t construction_attempt_n = 0;
 	while (tx_must_be_reconstructed) {
 		construction_attempt_n += 1; // merely kept for assertion purposes
 		//
-		optional<string> mixin_string;
-		optional<string> change_amount_string;
-		optional<string> using_fee_string;
-		optional<string> final_total_wo_fee_string;
+		boost::optional<string> mixin_string;
+		boost::optional<string> change_amount_string;
+		boost::optional<string> using_fee_string;
+		boost::optional<string> final_total_wo_fee_string;
 		boost::property_tree::ptree using_outs;
 		{
 			boost::property_tree::ptree root;
@@ -1280,17 +1280,17 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send_stagenet_coinbase)
 			ret_stream << ret_string;
 			boost::property_tree::ptree ret_tree;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				if ((CreateTransactionErrorCode)*err_code == monero_transfer_utils::needMoreMoneyThanFound) {
-					optional<string> spendable_balance_string = ret_tree.get_optional<string>("spendable_balance");
+					boost::optional<string> spendable_balance_string = ret_tree.get_optional<string>("spendable_balance");
 					BOOST_REQUIRE(spendable_balance_string != none);
 					BOOST_REQUIRE((*spendable_balance_string).size() > 0);
 					//			uint64_t fee = stoull(*fee_string);
 					//			BOOST_REQUIRE(fee == 135000000);
 					cout << "bridge__transfers__send_stagenet_coinbase: step1: needMoreMoneyThanFound: spendable_balance " << *spendable_balance_string << endl;
 					//
-					optional<string> required_balance_string = ret_tree.get_optional<string>("required_balance");
+					boost::optional<string> required_balance_string = ret_tree.get_optional<string>("required_balance");
 					BOOST_REQUIRE(required_balance_string != none);
 					BOOST_REQUIRE((*required_balance_string).size() > 0);
 					//			uint64_t fee = stoull(*fee_string);
@@ -1364,7 +1364,7 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send_stagenet_coinbase)
 			stringstream ret_stream;
 			ret_stream << ret_string;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>(ret_json_key__any__err_code());
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>(ret_json_key__any__err_code());
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				auto err_msg = err_msg_from_err_code__create_transaction((CreateTransactionErrorCode)*err_code);
 				BOOST_REQUIRE_MESSAGE(false, err_msg);
@@ -1413,7 +1413,7 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send_stagenet_coinbase)
 			stringstream ret_stream;
 			ret_stream << ret_string;
 			boost::property_tree::read_json(ret_stream, ret_tree);
-			optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
+			boost::optional<uint32_t> err_code = ret_tree.get_optional<uint32_t>("err_code");
 			if (err_code != none && (CreateTransactionErrorCode)*err_code != monero_transfer_utils::noError) {
 				auto err_msg = err_msg_from_err_code__create_transaction((CreateTransactionErrorCode)*err_code);
 				BOOST_REQUIRE_MESSAGE(false, err_msg);
@@ -1431,9 +1431,9 @@ BOOST_AUTO_TEST_CASE(bridge__transfers__send_stagenet_coinbase)
 				BOOST_REQUIRE(construction_attempt_n < 3); // not generally expecting to have to do this more than once or twice
 				continue; // proceed to next iteration (re-enter tx construction at step1(II) with fee_actually_needed_string from step2(I))
 			}
-			optional<string> tx_hash = ret_tree.get_optional<string>("tx_hash");
-			optional<string> tx_key_string = ret_tree.get_optional<string>("tx_key");
-			optional<string> serialized_signed_tx = ret_tree.get_optional<string>("serialized_signed_tx");
+			boost::optional<string> tx_hash = ret_tree.get_optional<string>("tx_hash");
+			boost::optional<string> tx_key_string = ret_tree.get_optional<string>("tx_key");
+			boost::optional<string> serialized_signed_tx = ret_tree.get_optional<string>("serialized_signed_tx");
 			BOOST_REQUIRE(serialized_signed_tx != none);
 			BOOST_REQUIRE((*serialized_signed_tx).size() > 0);
 			cout << "bridge__transfers__send_stagenet_coinbase: serialized_signed_tx: " << *serialized_signed_tx << endl;

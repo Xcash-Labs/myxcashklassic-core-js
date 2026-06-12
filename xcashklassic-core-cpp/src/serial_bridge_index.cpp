@@ -289,14 +289,14 @@ string serial_bridge::send_step1__prepare_params_for_get_decoys(const string &ar
 		//
 		unspent_outs.push_back(std::move(out));
 	}
-	optional<string> optl__prior_attempt_size_calcd_fee_string = json_root.get_optional<string>("prior_attempt_size_calcd_fee");
-	optional<uint64_t> optl__prior_attempt_size_calcd_fee = none;
+	boost::optional<string> optl__prior_attempt_size_calcd_fee_string = json_root.get_optional<string>("prior_attempt_size_calcd_fee");
+	boost::optional<uint64_t> optl__prior_attempt_size_calcd_fee = none;
 	if (optl__prior_attempt_size_calcd_fee_string != none) {
 		optl__prior_attempt_size_calcd_fee = stoull(*optl__prior_attempt_size_calcd_fee_string);
 	}
-	optional<SpendableOutputToRandomAmountOutputs> optl__prior_attempt_unspent_outs_to_mix_outs;
+	boost::optional<SpendableOutputToRandomAmountOutputs> optl__prior_attempt_unspent_outs_to_mix_outs;
 	SpendableOutputToRandomAmountOutputs prior_attempt_unspent_outs_to_mix_outs;
-	optional<boost::property_tree::ptree &> optl__prior_attempt_unspent_outs_to_mix_outs_json = json_root.get_child_optional("prior_attempt_unspent_outs_to_mix_outs");
+	boost::optional<boost::property_tree::ptree &> optl__prior_attempt_unspent_outs_to_mix_outs_json = json_root.get_child_optional("prior_attempt_unspent_outs_to_mix_outs");
 	if (optl__prior_attempt_unspent_outs_to_mix_outs_json != none)
 	{
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &outs_to_mix_outs_desc, *optl__prior_attempt_unspent_outs_to_mix_outs_json)
@@ -317,7 +317,7 @@ string serial_bridge::send_step1__prepare_params_for_get_decoys(const string &ar
 		optl__prior_attempt_unspent_outs_to_mix_outs = std::move(prior_attempt_unspent_outs_to_mix_outs);
 	}
 	uint8_t fork_version = 0; // if missing
-	optional<string> optl__fork_version_string = json_root.get_optional<string>("fork_version");
+	boost::optional<string> optl__fork_version_string = json_root.get_optional<string>("fork_version");
 	if (optl__fork_version_string != none) {
 		fork_version = stoul(*optl__fork_version_string);
 	}
@@ -416,9 +416,9 @@ string serial_bridge::pre_step2_tie_unspent_outs_to_mix_outs_for_all_future_tx_a
 		mix_outs_from_server.push_back(std::move(amountAndOuts));
 	}
 	//
-	optional<SpendableOutputToRandomAmountOutputs> optl__prior_attempt_unspent_outs_to_mix_outs;
+	boost::optional<SpendableOutputToRandomAmountOutputs> optl__prior_attempt_unspent_outs_to_mix_outs;
 	SpendableOutputToRandomAmountOutputs prior_attempt_unspent_outs_to_mix_outs;
-	optional<boost::property_tree::ptree &> optl__prior_attempt_unspent_outs_to_mix_outs_json = json_root.get_child_optional("prior_attempt_unspent_outs_to_mix_outs");
+	boost::optional<boost::property_tree::ptree &> optl__prior_attempt_unspent_outs_to_mix_outs_json = json_root.get_child_optional("prior_attempt_unspent_outs_to_mix_outs");
 	if (optl__prior_attempt_unspent_outs_to_mix_outs_json != none)
 	{
 		BOOST_FOREACH(boost::property_tree::ptree::value_type &outs_to_mix_outs_desc, *optl__prior_attempt_unspent_outs_to_mix_outs_json)
@@ -547,7 +547,7 @@ string serial_bridge::send_step2__try_create_transaction(const string &args_stri
 		mix_outs.push_back(std::move(amountAndOuts));
 	}
 	uint8_t fork_version = 0; // if missing
-	optional<string> optl__fork_version_string = json_root.get_optional<string>("fork_version");
+	boost::optional<string> optl__fork_version_string = json_root.get_optional<string>("fork_version");
 	if (optl__fork_version_string != none) {
 		fork_version = stoul(*optl__fork_version_string);
 	}
