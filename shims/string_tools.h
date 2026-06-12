@@ -109,13 +109,7 @@ namespace string_tools
   {
     return hex_to_pod(hex_str, unwrap(s));
   }
-  //----------------------------------------------------------------------------
-  template<class t_pod_type>
-  bool hex_to_pod(const boost::string_ref hex_str, epee::mlocked<t_pod_type>& s)
-  {
-    return hex_to_pod(hex_str, unwrap(s));
-  }
-  	//----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
 	template<typename T>
 	inline std::string to_string_hex(const T &val)
 	{
