@@ -139,14 +139,15 @@ set (EMCC_LINKER_FLAGS__WASM
 message(STATUS "EMCC_LINKER_FLAGS__WASM ${EMCC_LINKER_FLAGS__WASM}")
 #
 add_executable(MyMoneroCoreCpp_WASM ${SRC_FILES})
-set_source_files_properties(
-  src/index.cpp
-  src/emscr_async_send_bridge.cpp
-  PROPERTIES COMPILE_FLAGS "-std=c++11"
-)
+#
+foreach(src ${SRC_FILES})
+  if(src MATCHES "\\.(cpp|cc|cxx)$")
+    set_source_files_properties(${src} PROPERTIES COMPILE_FLAGS "-std=c++11")
+  endif()
+endforeach()
 #
 set_target_properties(MyMoneroCoreCpp_WASM PROPERTIES
-  COMPILE_FLAGS "-s USE_BOOST_HEADERS=1"
+  COMPILE_FLAGS "-std=c++11 -s USE_BOOST_HEADERS=1"
   LINK_FLAGS "${EMCC_LINKER_FLAGS__WASM}"
 )
 #
