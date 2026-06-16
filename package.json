@@ -18,7 +18,7 @@
   },
   "napa": {
     "@mymonero/mymonero-core-cpp": "git+https://github.com/mymonero/mymonero-core-cpp",
-    "@mymonero/mymonero-core-custom": "git+https://github.com/mymonero/monero-core-custom"
+    "@mymonero/mymonero-core-custom": "git+https://github.com/Xcash-Labs/xcashklassic-core-custom"
   },
   "keywords": [
     "monero",
