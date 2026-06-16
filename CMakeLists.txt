@@ -115,7 +115,6 @@ set(
 
 set (EMCC_LINKER_FLAGS__WASM
 "-Wall \
--gsource-map \
 -std=c++11 \
 -flto \
 --bind \
@@ -134,7 +133,7 @@ set (EMCC_LINKER_FLAGS__WASM
 -O3 \
 --source-map-base ${CMAKE_CURRENT_LIST_DIR}/sourcemap \
 --memory-init-file 1 \
-")  
+")
 
 message(STATUS "EMCC_LINKER_FLAGS__WASM ${EMCC_LINKER_FLAGS__WASM}")
 #
