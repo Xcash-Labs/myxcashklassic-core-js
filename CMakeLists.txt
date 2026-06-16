@@ -147,7 +147,7 @@ foreach(src ${SRC_FILES})
 endforeach()
 #
 set_target_properties(MyMoneroCoreCpp_WASM PROPERTIES
-  COMPILE_FLAGS "-std=c++11 -s USE_BOOST_HEADERS=1"
+  COMPILE_FLAGS "-s USE_BOOST_HEADERS=1"
   LINK_FLAGS "${EMCC_LINKER_FLAGS__WASM}"
 )
 #
