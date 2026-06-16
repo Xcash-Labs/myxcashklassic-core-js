@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-enum-constexpr-conversion")
-add_compile_definitions(MYMONERO_CORE_CUSTOM)
+add_definitions(-DMYMONERO_CORE_CUSTOM)
 
 project(MyMoneroCoreCpp)
 #
