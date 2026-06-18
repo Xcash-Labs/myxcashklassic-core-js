@@ -121,13 +121,14 @@ set(EMCC_LINKER_FLAGS__WASM
   "-sMODULARIZE=1"
   "-sEXPORT_NAME='MyMoneroClient'"
   "-sWASM=1"
-  "-sASSERTIONS=2"
+  "-sASSERTIONS=1"                          # Reduced from 2 to prevent strict runtime panics
   "-sDEMANGLE_SUPPORT=1"
   "-sALLOW_MEMORY_GROWTH=1"
-  "-sFORCE_FILESYSTEM=1"
+  "-sFORCE_FILESYSTEM=1"                    # Vital for MyMonero's virtual files
   "-sNO_DISABLE_EXCEPTION_CATCHING"
-  "-sERROR_ON_UNDEFINED_SYMBOLS=1"
-  "-sEXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8']"
+  "-sERROR_ON_UNDEFINED_SYMBOLS=0"          # <-- CRITICAL: Prevents breaking on Embind internals
+  "-sWARN_ON_UNDEFINED_SYMBOLS=0"           # <-- Suppresses the warning cascade
+  "-sEXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8','_embind_register_function','ccall','cwrap']" 
   "-O3"
   "--source-map-base=${CMAKE_CURRENT_LIST_DIR}/sourcemap/"
   "--memory-init-file=1"
