@@ -124,12 +124,13 @@ set(EMCC_LINKER_FLAGS__WASM
   "-sASSERTIONS=2"
   "-sDEMANGLE_SUPPORT=1"
   "-sALLOW_MEMORY_GROWTH=1"
+  "-sFORCE_FILESYSTEM=1"
   "-sNO_DISABLE_EXCEPTION_CATCHING"
   "-sERROR_ON_UNDEFINED_SYMBOLS=1"
   "-sEXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8']"
   "-O3"
-  "--source-map-base ${CMAKE_CURRENT_LIST_DIR}/sourcemap/"
-  "--memory-init-file 1"
+  "--source-map-base=${CMAKE_CURRENT_LIST_DIR}/sourcemap/"
+  "--memory-init-file=1"
 )
 
 message(STATUS "EMCC_LINKER_FLAGS__WASM ${EMCC_LINKER_FLAGS__WASM}")
