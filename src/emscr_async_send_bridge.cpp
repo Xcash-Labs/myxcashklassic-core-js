@@ -76,6 +76,7 @@ struct Send_Task_AsyncContext
 	vector<uint64_t> sending_amounts;
 	bool is_sweeping;
 	uint32_t simple_priority;
+	std::string tx_privacy_settings;
 	uint64_t unlock_time;
 	cryptonote::network_type nettype;
 	//
@@ -273,6 +274,7 @@ void emscr_async_bridge::send_funds(const string &args_string)
 	}
 	vector<SpendableOutput> unspent_outs; // to be set after getting unspent outs
 	vector<SpendableOutput> using_outs; // to be set after step1
+	auto tx_privacy_settings = json_root.get<std::string>("tx_privacy_settings", "private");
 	Send_Task_AsyncContext *ptrTo_taskAsyncContext = new Send_Task_AsyncContext{
 		task_id,
 		//
@@ -284,6 +286,7 @@ void emscr_async_bridge::send_funds(const string &args_string)
 		sending_amounts,
 		is_sweeping,
 		(uint32_t)stoul(json_root.get<string>("priority")),
+		tx_privacy_settings,
 		unlock_time,
 		nettype,
 		//
@@ -497,6 +500,7 @@ void emscr_async_bridge::send_cb_II__got_random_outs(const string &args_string)
 		*(ptrTo_taskAsyncContext->step1_retVals__change_amount),
 		*(ptrTo_taskAsyncContext->step1_retVals__using_fee),
 		ptrTo_taskAsyncContext->simple_priority,
+		ptrTo_taskAsyncContext->tx_privacy_settings,
 		ptrTo_taskAsyncContext->step1_retVals__using_outs,
 		ptrTo_taskAsyncContext->fee_per_b,
 		ptrTo_taskAsyncContext->fee_mask,
