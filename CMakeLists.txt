@@ -113,28 +113,24 @@ set(
     ${MONERO_SRC}/contrib/libsodium/src/crypto_verify/verify.c
 )
 
-set (EMCC_LINKER_FLAGS__WASM
-"-Wall \
--std=c++11 \
--flto \
---bind \
--s BINARYEN_TRAP_MODE='clamp' \
--s MODULARIZE=1 \
--s 'EXPORT_NAME=\"MyMoneroClient\"' \
--s ENVIRONMENT=web \
--s WASM=1 \
--s ASSERTIONS=2 \
--s DEMANGLE_SUPPORT=1 \
--s ALLOW_MEMORY_GROWTH=1 \
--s NO_DISABLE_EXCEPTION_CATCHING \
--s NODEJS_CATCH_EXIT=1 \
--s NODEJS_CATCH_REJECTION=0 \
--s ERROR_ON_UNDEFINED_SYMBOLS=1 \
--s EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\"]' \
--O3 \
---source-map-base ${CMAKE_CURRENT_LIST_DIR}/sourcemap \
---memory-init-file 1 \
-")
+set(EMCC_LINKER_FLAGS__WASM
+  "-Wall"
+  "-std=c++11"
+  "-flto"
+  "--bind"
+  "-sMODULARIZE=1"
+  "-sEXPORT_NAME='MyMoneroClient'"
+  "-sWASM=1"
+  "-sASSERTIONS=2"
+  "-sDEMANGLE_SUPPORT=1"
+  "-sALLOW_MEMORY_GROWTH=1"
+  "-sNO_DISABLE_EXCEPTION_CATCHING"
+  "-sERROR_ON_UNDEFINED_SYMBOLS=1"
+  "-sEXPORTED_RUNTIME_METHODS=['UTF8ToString','stringToUTF8']"
+  "-O3"
+  "--source-map-base ${CMAKE_CURRENT_LIST_DIR}/sourcemap/"
+  "--memory-init-file 1"
+)
 
 message(STATUS "EMCC_LINKER_FLAGS__WASM ${EMCC_LINKER_FLAGS__WASM}")
 #
