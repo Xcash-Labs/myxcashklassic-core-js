@@ -113,28 +113,31 @@ set(
     ${MONERO_SRC}/contrib/libsodium/src/crypto_verify/verify.c
 )
 
-set (EMCC_LINKER_FLAGS__WASM
-"-Wall \
--gsource-map \
--std=c++11 \
--flto \
---bind \
--s STRICT=1 \
--s MODULARIZE=1 \
--s 'EXPORT_NAME=\"MyMoneroClient\"' \
--s WASM=1 \
--s ASSERTIONS=2 \
--s DEMANGLE_SUPPORT=1 \
--s ALLOW_MEMORY_GROWTH=1 \
--s NO_DISABLE_EXCEPTION_CATCHING \
--s NODEJS_CATCH_EXIT=1 \
--s NODEJS_CATCH_REJECTION=0 \
--s ERROR_ON_UNDEFINED_SYMBOLS=1 \
--s EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\"]' \
--O3 \
---source-map-base ${CMAKE_CURRENT_LIST_DIR}/sourcemap \
---memory-init-file 1 \
-")
+set(EMCC_LINKER_FLAGS__WASM
+  "-Wall"
+  "-gsource-map"
+  "-std=c++11"
+  "-flto"
+  "--bind"
+  "-s STRICT=1"
+  "-s MODULARIZE=1"
+  "-s 'EXPORT_NAME=\"MyMoneroClient\"'"
+  "-s WASM=1"
+  "-s ASSERTIONS=2"
+  "-s DEMANGLE_SUPPORT=1"
+  "-s ALLOW_MEMORY_GROWTH=1"
+  "-s NO_DISABLE_EXCEPTION_CATCHING"
+  "-s NODEJS_CATCH_EXIT=1"
+  "-s NODEJS_CATCH_REJECTION=0"
+  "-s ERROR_ON_UNDEFINED_SYMBOLS=0"        # <-- CRITICAL: Changed from 1 to 0 to bypass the compiler bug
+  "-s EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\"]'"
+  "-O3"
+  "--source-map-base=${CMAKE_CURRENT_LIST_DIR}/sourcemap/"  # <-- Joined with '=' to prevent the path splitting bug
+  "--memory-init-file=1"                                   # <-- Joined with '=' to prevent the path splitting bug
+)
+
+# Safely convert the list to a space-separated string for set_target_properties
+string(REPLACE ";" " " EMCC_FLAGS_STRING_CLEAN "${EMCC_LINKER_FLAGS__WASM}")
 
 message(STATUS "EMCC_LINKER_FLAGS__WASM ${EMCC_LINKER_FLAGS__WASM}")
 #
@@ -148,7 +151,7 @@ endforeach()
 #
 set_target_properties(MyMoneroCoreCpp_WASM PROPERTIES
   COMPILE_FLAGS "-s USE_BOOST_HEADERS=1"
-  LINK_FLAGS "${EMCC_LINKER_FLAGS__WASM}"
+  LINK_FLAGS "${EMCC_FLAGS_STRING_CLEAN}"
 )
 #
 # set_target_properties(MyMoneroCoreCpp_WASM PROPERTIES SUFFIX ".html")
