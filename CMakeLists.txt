@@ -118,7 +118,7 @@ set (EMCC_LINKER_FLAGS__WASM
 -std=c++11 \
 -flto \
 --bind \
--s STRICT=1 \
+-s BINARYEN_TRAP_MODE='clamp' \
 -s MODULARIZE=1 \
 -s 'EXPORT_NAME=\"MyMoneroClient\"' \
 -s WASM=1 \
