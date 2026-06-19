@@ -116,9 +116,9 @@ set(
 set (EMCC_LINKER_FLAGS__WASM
 "-Wall \
 -std=c++11 \
--s NO_INITIAL_RUN=1 \
 -flto \
 --bind \
+-s INVOKE_RUN=0
 -s STRICT=1 \
 -s MODULARIZE=1 \
 -s 'EXPORT_NAME=\"MyMoneroClient\"' \
