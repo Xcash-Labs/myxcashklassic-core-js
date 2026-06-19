@@ -116,6 +116,7 @@ set(
 set (EMCC_LINKER_FLAGS__WASM
 "-Wall \
 -std=c++11 \
+-s NO_INITIAL_RUN=1 \
 -flto \
 --bind \
 -s STRICT=1 \
@@ -130,7 +131,7 @@ set (EMCC_LINKER_FLAGS__WASM
 -s EXPORTED_RUNTIME_METHODS='[\"UTF8ToString\",\"stringToUTF8\"]' \
 -O3 \
 --memory-init-file 1 \
-") 
+")
 
 message(STATUS "EMCC_LINKER_FLAGS__WASM ${EMCC_LINKER_FLAGS__WASM}")
 #
