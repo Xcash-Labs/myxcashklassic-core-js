@@ -8,7 +8,7 @@
     "url": "git+https://github.com/mymonero/mymonero-core-js.git"
   },
   "scripts": {
-    "build": "docker run --rm -it -v $(pwd):/app -w /app -e EMSCRIPTEN=/emsdk/upstream/emscripten emscripten/emsdk:1.39.8 ./bin/archive-emcpp.sh",
+    "build": "docker run --rm -it -v $(pwd):/app -w /app -e EMSCRIPTEN=/emsdk/upstream/emscripten emscripten/emsdk:2.0.34 ./bin/archive-emcpp.sh",
     "format": "find . -name '*.js*' | xargs prettier --write --config ./.prettierrc --config-precedence file-override",
     "test": "mocha",
     "install": "napa"
